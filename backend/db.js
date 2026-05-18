@@ -6,7 +6,7 @@ dotenv.config();
 const pool = new pg.Pool({
   ...(process.env.DATABASE_URL 
     ? { 
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.DATABASE_URL.replace(/['"]/g, '').trim(),
         ssl: { rejectUnauthorized: false } // Required for Supabase
       } 
     : {
