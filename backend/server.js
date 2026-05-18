@@ -413,12 +413,12 @@ app.get('/api/courts', async (req, res) => {
 // --- Booking Routes (FCFS Implementation) ---
 app.get('/api/bookings', async (req, res) => {
   try {
-    await db.query("SET time_zone = '+07:00'");
+    await db.query("SET timezone = 'Asia/Jakarta'");
     const [bookings] = await db.query(`
       SELECT 
         b.id, b.user_id, b.court_id, b.start_time, b.end_time, b.total_price, 
         b.payment_method, b.payment_status, b.status, b.customer_phone, b.customer_full_name, b.created_at,
-        DATE_FORMAT(b.booking_date, '%Y-%m-%d') as booking_date,
+        TO_CHAR(b.booking_date, 'YYYY-MM-DD') as booking_date,
         u.username as customer_name, 
         c.name as court_name 
       FROM bookings b
@@ -464,17 +464,17 @@ app.post('/api/bookings', async (req, res) => {
     }
 
     // Insert as Pending (First one to hit DB will be processed first by Admin)
-    await db.query("SET time_zone = '+07:00'"); // Paksa zona waktu Jakarta
-    const [result] = await db.query(
+    await db.query("SET timezone = 'Asia/Jakarta'"); // Paksa zona waktu Jakarta
+    const [rows] = await db.query(
       `INSERT INTO bookings 
       (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending') RETURNING id`,
       [user_id || null, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name]
     );
 
     res.json({ 
       success: true, 
-      id: result.insertId, 
+      id: rows[0].id, 
       message: 'Pemesanan berhasil diajukan. Silakan lakukan pembayaran.' 
     });
   } catch (err) {
@@ -487,11 +487,11 @@ app.post('/api/courts', async (req, res) => {
   const { name, type, location, price, status, image } = req.body;
   if (!name) return res.status(400).json({ success: false, message: 'Nama lapangan wajib diisi.' });
   try {
-    const [result] = await db.query(
-      'INSERT INTO courts (name, type, location, price, status, image) VALUES (?, ?, ?, ?, ?, ?)',
+    const [rows] = await db.query(
+      'INSERT INTO courts (name, type, location, price, status, image) VALUES (?, ?, ?, ?, ?, ?) RETURNING id',
       [name, type || 'Sintetis', location || '', price || 0, status || 'Active', image || '']
     );
-    res.json({ success: true, id: result.insertId, message: 'Lapangan berhasil ditambahkan.' });
+    res.json({ success: true, id: rows[0].id, message: 'Lapangan berhasil ditambahkan.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
