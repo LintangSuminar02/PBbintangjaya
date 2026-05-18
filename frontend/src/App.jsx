@@ -57,7 +57,9 @@ export default function App() {
   return (
     <ToastProvider>
       <div className="min-h-screen bg-white">
-        <Header currentPage={currentPage} setPage={setCurrentPage} API_URL={API_URL} />
+        {currentPage !== 'admin-dashboard' && currentPage !== 'display' && (
+          <Header currentPage={currentPage} setPage={setCurrentPage} API_URL={API_URL} />
+        )}
         <main>
           {currentPage === 'explore'  && <LandingPage setPage={setCurrentPage} courts={courts} setQuickSearch={setQuickSearch} setTargetCourtId={setTargetCourtId} />}
           {currentPage === 'schedule' && (
@@ -74,7 +76,7 @@ export default function App() {
           )}
         </main>
 
-        {currentPage !== 'admin-dashboard' && <Footer />}
+        {currentPage !== 'admin-dashboard' && currentPage !== 'display' && <Footer />}
 
         {/* Display Mode — fullscreen overlay */}
         {currentPage === 'display' && (

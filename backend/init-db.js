@@ -5,12 +5,18 @@ dotenv.config();
 
 async function initDB() {
   const pool = new pg.Pool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'badminton_db',
-    port: process.env.DB_PORT || 5432,
-    // ssl: { rejectUnauthorized: false }
+  ...(process.env.DATABASE_URL 
+    ? { 
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+      } 
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASS || '',
+        database: process.env.DB_NAME || 'badminton_db',
+        port: process.env.DB_PORT || 5432,
+      })
   });
 
   console.log('Connected to PostgreSQL...');
