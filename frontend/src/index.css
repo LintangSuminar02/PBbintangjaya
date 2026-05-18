@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat", sans-serif;
+
+  --color-primary: #003d9b;
+  --color-primary-container: #0052cc;
+  --color-secondary: #006c47;
+  --color-secondary-container: #82f9be;
+  --color-on-secondary-container: #00734c;
+  --color-background: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-outline: #737685;
+  --color-outline-variant: #c3c6d6;
+  --color-surface-container: #f3f4f5;
+  --color-surface-container-low: #f8f9fa;
+  --color-surface-container-high: #e7e8e9;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-background text-zinc-900;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight text-primary;
+  }
+}
+
+.bg-hero-pattern {
+  background: linear-gradient(rgba(0, 61, 155, 0.7), rgba(0, 61, 155, 0.4)), url('https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+}
