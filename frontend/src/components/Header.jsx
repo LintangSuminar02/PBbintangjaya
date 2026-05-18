@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Bell, Clock, CheckCircle, Calendar } from 'lucide-react';
+import { Search, Bell, Clock, CheckCircle, Calendar, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const Header = ({ currentPage, setPage, API_URL }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [recentActivities, setRecentActivities] = useState([]);
   const [hasNew, setHasNew] = useState(false);
   const dropdownRef = useRef(null);
@@ -144,7 +145,48 @@ const Header = ({ currentPage, setPage, API_URL }) => {
         <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden cursor-pointer shadow-lg shadow-blue-900/10 active:scale-95 transition-all" onClick={() => setPage('admin-dashboard')}>
           <img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEZw5EISOdOpPdN12KRdGtn_XgICqY13ENWvvv3VpmKBUE0Y_k6q9a75aMD088FWO2oWeE27-V8O2HXD7S0oAvwFgi7IQoTPH1MqLBLEZ2RY_auiSbUjQr8rGd8AulKd8JxzqPagNnyujRXoGHySYzpWiu0VbmF0sP-A_apBNPYX1ltuAJ5V4WtxKIqZNHUBGYOQPoXrXAkHWnckka30NHck87h7_X5KE41fz_dF1Woiwb7nr9Czu9a8XcdHtEK3q99iYZz7R_OEnE" className="w-full h-full object-cover" />
         </div>
+
+        {/* Hamburger Menu Button */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+          className="p-2.5 rounded-full hover:bg-zinc-100 transition-all text-zinc-400 hover:text-primary md:hidden active:scale-95"
+          title="Menu"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
+
+      {/* Mobile Drawer Navigation */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-20 left-0 w-full bg-white border-b border-outline-variant shadow-xl z-40 px-8 py-6 flex flex-col gap-4 md:hidden"
+          >
+            <button 
+              onClick={() => { setPage('explore'); setIsMobileMenuOpen(false); }}
+              className={`font-semibold text-left py-2.5 border-b border-zinc-50 ${currentPage === 'explore' ? 'text-primary' : 'text-zinc-600 hover:text-primary'}`}
+            >
+              Eksplor
+            </button>
+            <button 
+              onClick={() => { setPage('schedule'); setIsMobileMenuOpen(false); }}
+              className={`font-semibold text-left py-2.5 border-b border-zinc-50 ${currentPage === 'schedule' ? 'text-primary' : 'text-zinc-600 hover:text-primary'}`}
+            >
+              Jadwal
+            </button>
+            <button 
+              onClick={() => { setPage('my-bookings'); setIsMobileMenuOpen(false); }}
+              className={`font-semibold text-left py-2.5 border-b border-zinc-50 ${currentPage === 'my-bookings' ? 'text-primary' : 'text-zinc-600 hover:text-primary'}`}
+            >
+              Pesanan Saya
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

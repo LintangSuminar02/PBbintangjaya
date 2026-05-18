@@ -148,24 +148,24 @@ export default function DisplayPage({ onExit }) {
     if (slot.type === 'member') return (
       <div className="h-full rounded-2xl bg-purple-100 border-2 border-purple-300 flex flex-col items-center justify-center text-center px-2 py-2 shadow-sm">
         <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] leading-none">MEMBER PB</span>
-        <span className="text-[18px] font-black text-purple-900 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
+        <span className="tv-cell-label font-black text-purple-900 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
       </div>
     );
     if (slot.type === 'confirmed') return (
       <div className="h-full rounded-2xl bg-blue-100 border-2 border-blue-300 flex flex-col items-center justify-center text-center px-2 py-2 shadow-sm">
         <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] leading-none">TERKONFIRMASI</span>
-        <span className="text-[18px] font-black text-blue-900 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
+        <span className="tv-cell-label font-black text-blue-900 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
       </div>
     );
     if (slot.type === 'pending') return (
       <div className="h-full rounded-2xl bg-amber-50 border-2 border-dashed border-amber-300 flex flex-col items-center justify-center text-center px-2 py-2">
         <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] leading-none">ANTRIAN</span>
-        <span className="text-[18px] font-black text-amber-800 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
+        <span className="tv-cell-label font-black text-amber-800 leading-tight mt-1 line-clamp-2 uppercase">{slot.label}</span>
       </div>
     );
     return (
       <div className="h-full rounded-2xl border-2 border-dashed border-zinc-200 flex items-center justify-center">
-        <span className="text-[14px] text-zinc-300 uppercase tracking-widest font-black opacity-40">— KOSONG —</span>
+        <span className="tv-cell-empty-label text-zinc-300 uppercase tracking-widest font-black opacity-40">— KOSONG —</span>
       </div>
     );
   }
@@ -176,12 +176,12 @@ export default function DisplayPage({ onExit }) {
   return (
     <div
       ref={ref}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#F0F4FF', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+      className="tv-container"
     >
       {/* ── TOP NAV ────────────────────────────────────────────── */}
-      <div style={{ background: '#1A4B9F', padding: '16px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ width: 64, height: 64, borderRadius: 18, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 8px 16px rgba(0,0,0,0.2)' }}>
+      <div className="tv-header">
+        <div className="tv-header-left">
+          <div className="tv-logo-wrapper">
             <img 
               src="/logo.png" 
               alt="Logo" 
@@ -193,18 +193,18 @@ export default function DisplayPage({ onExit }) {
               }}
             />
           </div>
-          <div>
-            <div style={{ color: '#fff', fontWeight: 950, fontSize: 32, lineHeight: 1, letterSpacing: -0.5 }}>PB Bintang Jaya</div>
-            <div style={{ color: '#93C5FD', fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: 3, marginTop: 4 }}>Papan Jadwal Live Monitor</div>
+          <div className="tv-brand">
+            <div className="tv-brand-title">PB Bintang Jaya</div>
+            <div className="tv-brand-subtitle">Papan Jadwal Live Monitor</div>
           </div>
           
           {currentSlide && (
-            <div style={{ marginLeft: 40, padding: '12px 32px', background: '#fff', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 20, boxShadow: '0 12px 32px rgba(0,0,0,0.2)' }}>
+            <div className="tv-monitor-info">
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: 11, fontWeight: 900, color: '#64748B', textTransform: 'uppercase', letterSpacing: 2 }}>Monitoring</span>
                 <span style={{ fontSize: 28, fontWeight: 950, color: '#1E3A8A', lineHeight: 1 }}>LAPANGAN {currentSlide.courtIdx + 1}</span>
               </div>
-              <div style={{ width: 2, height: 40, background: '#E2E8F0' }} />
+              <div style={{ width: 2, height: 40, background: '#E2E8F0' }} className="hidden sm:block" />
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: 11, fontWeight: 900, color: '#64748B', textTransform: 'uppercase', letterSpacing: 2 }}>Waktu</span>
                 <span style={{ fontSize: 20, fontWeight: 800, color: '#1E3A8A', lineHeight: 1 }}>{currentSlide.hours[0]} - {currentSlide.hours[currentSlide.hours.length - 1]}</span>
@@ -213,18 +213,18 @@ export default function DisplayPage({ onExit }) {
           )}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ color: '#fff', fontWeight: 950, fontSize: 64, fontVariantNumeric: 'tabular-nums', lineHeight: 0.9 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 40 }} className="flex-col sm:flex-row align-stretch sm:align-center">
+          <div className="tv-clock-container">
+            <div className="tv-clock-val">
               {clock.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
               <span style={{ fontSize: 32, opacity: 0.6, marginLeft: 4 }}>:{clock.toLocaleTimeString('id-ID', { second: '2-digit' })}</span>
             </div>
-            <div style={{ color: '#93C5FD', fontSize: 16, fontWeight: 800, marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+            <div className="tv-clock-date">
               {DAY_NAMES[todayIdx]}, {weekDates[todayIdx]}
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="tv-header-actions">
             <button onClick={toggleFS} style={{ padding: 16, borderRadius: 20, background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', color: '#fff', transition: 'all 0.2s' }}>
               <Maximize2 size={32} />
             </button>
@@ -238,16 +238,16 @@ export default function DisplayPage({ onExit }) {
       </div>
 
       {/* ── GRID ──────────────────────────────────────────────── */}
-      <div style={{ flex: 1, overflow: 'hidden', padding: '24px 32px' }}>
-        <table style={{ width: '100%', height: '100%', borderCollapse: 'separate', borderSpacing: '0 12px' }}>
+      <div className="tv-table-wrapper">
+        <table className="tv-table">
           <thead>
             <tr>
-              <th style={{ background: '#1A4B9F', color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 3, padding: '20px 12px', borderRadius: '24px 0 0 24px', width: 100, textAlign: 'center' }}>LAP</th>
-              <th style={{ background: '#1A4B9F', color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 3, padding: '20px 12px', width: 140, textAlign: 'center' }}>JAM</th>
+              <th className="tv-th-lap">LAP</th>
+              <th className="tv-th-jam">JAM</th>
               {DAY_NAMES.map((day, di) => {
                 const isToday = di === todayIdx;
                 return (
-                  <th key={day} style={{ background: isToday ? '#059669' : '#1A4B9F', color: '#fff', fontSize: 20, fontWeight: 950, textTransform: 'uppercase', padding: '20px 12px', textAlign: 'center', borderLeft: '2px solid rgba(255,255,255,0.1)', borderRadius: di === 6 ? '0 24px 24px 0' : 0 }}>
+                  <th key={day} className="tv-th-day" style={{ background: isToday ? '#059669' : '#1A4B9F', borderRadius: di === 6 ? '0 24px 24px 0' : 0 }}>
                     <div>{day}</div>
                     <div style={{ fontSize: 14, fontWeight: 800, color: isToday ? '#A7F3D0' : '#93C5FD', marginTop: 6, letterSpacing: 1 }}>
                       {weekDates[di].split('-').slice(1).reverse().join('/')}{isToday ? ' ◀' : ''}
@@ -268,16 +268,16 @@ export default function DisplayPage({ onExit }) {
                   {hi === 0 ? (
                     <td
                       rowSpan={currentSlide.hours.length}
-                      style={{ background: '#1A4B9F', textAlign: 'center', verticalAlign: 'middle', borderRadius: '24px 0 0 24px', padding: '24px 12px' }}
+                      className="tv-td-lap"
                     >
                       <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 14, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 4 }}>LAP</div>
-                      <div style={{ color: '#fff', fontSize: 96, fontWeight: 950, lineHeight: 1, marginTop: 10, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>{currentSlide.courtIdx + 1}</div>
-                      <div style={{ color: currentSlide.court.status === 'Active' ? '#6EE7B7' : '#FCD34D', fontSize: 14, fontWeight: 900, textTransform: 'uppercase', marginTop: 24, background: 'rgba(255,255,255,0.15)', borderRadius: 16, padding: '10px 20px', display: 'inline-block', border: '1px solid rgba(255,255,255,0.1)' }}>{currentSlide.court.status}</div>
+                      <div className="tv-td-lap-num">{currentSlide.courtIdx + 1}</div>
+                      <div className="tv-td-lap-status" style={{ color: currentSlide.court.status === 'Active' ? '#6EE7B7' : '#FCD34D' }}>{currentSlide.court.status}</div>
                     </td>
                   ) : null}
 
-                  <td style={{ background: isNow ? '#ECFDF5' : rowBg, textAlign: 'center', padding: '12px', borderLeft: '4px solid #E0E7FF', width: 140 }}>
-                    <div style={{ fontSize: 42, fontWeight: 950, fontFamily: 'monospace', color: isNow ? '#059669' : '#1E3A8A', lineHeight: 1 }}>{time}</div>
+                  <td className="tv-td-jam" style={{ background: isNow ? '#ECFDF5' : rowBg }}>
+                    <div className="tv-td-jam-val" style={{ color: isNow ? '#059669' : '#1E3A8A' }}>{time}</div>
                     {isNow && <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#10B981', margin: '12px auto 0', animation: 'pulse-glow 1.5s infinite' }} />}
                   </td>
 
@@ -286,7 +286,7 @@ export default function DisplayPage({ onExit }) {
                     const isToday = di === todayIdx;
                     const cellBg  = isNow ? (isToday ? '#D1FAE5' : '#ECFDF5') : (isToday ? '#F0FDF4' : rowBg);
                     return (
-                      <td key={di} style={{ background: cellBg, padding: 12, borderLeft: '1px solid #E2E8F0', height: '100%' }}>
+                      <td key={di} className="tv-td-cell" style={{ background: cellBg, height: '100%' }}>
                         <Cell slot={slot} />
                       </td>
                     );
@@ -299,8 +299,8 @@ export default function DisplayPage({ onExit }) {
       </div>
 
       {/* ── FOOTER ────────────────────────────────────────────── */}
-      <div style={{ background: '#fff', borderTop: '2px solid #E2E8F0', padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <div style={{ display: 'flex', gap: 60 }}>
+      <div className="tv-footer">
+        <div className="tv-legend-items">
           {[
             { color: '#BFDBFE', border: '#93C3FD', label: 'Terkonfirmasi' },
             { color: '#FEF3C7', border: '#FCD34D', label: 'Antrian (FCFS)', dashed: true },
@@ -308,20 +308,20 @@ export default function DisplayPage({ onExit }) {
             { color: '#F9FAFB', border: '#E2E8F0', label: 'Kosong / Tersedia', dashed: true },
           ].map(({ color, border, label, dashed }) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 10, background: color, border: `3px ${dashed ? 'dashed' : 'solid'} ${border}`, boxShadow: '0 4px 8px rgba(0,0,0,0.05)' }} />
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: color, border: `3px ${dashed ? 'dashed' : 'solid'} ${border}`, boxShadow: '0 4px 8px rgba(0,0,0,0.05)' }} className="flex-shrink-0" />
               <span style={{ fontSize: 14, fontWeight: 900, color: '#475569', textTransform: 'uppercase', letterSpacing: 2 }}>{label}</span>
             </div>
           ))}
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="flex-col sm:flex-row align-center">
           {/* Slide Indicators */}
           <div style={{ display: 'flex', gap: 12 }}>
             {slides.map((_, i) => (
               <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: i === activeSlideIdx ? '#1A4B9F' : '#E2E8F0', transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)', transform: i === activeSlideIdx ? 'scale(1.3)' : 'scale(1)' }} />
             ))}
           </div>
-          <div style={{ width: 2, height: 32, background: '#E2E8F0' }} />
+          <div style={{ width: 2, height: 32, background: '#E2E8F0' }} className="hidden sm:block" />
           <div style={{ fontSize: 14, fontWeight: 900, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10B981', animation: 'pulse-glow 2s infinite' }} />
             SINKRONISASI AKTIF · {lastRefresh.toLocaleTimeString('id-ID')}
@@ -339,6 +339,83 @@ export default function DisplayPage({ onExit }) {
         
         /* Custom scrollbar for TV */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* DEFAULT TV STYLES (Layar Lebar / Desktop TV Monitor) */
+        .tv-container {
+          position: fixed; inset: 0; z-index: 9999; background: #F0F4FF;
+          font-family: 'Inter', sans-serif; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .tv-header {
+          background: #1A4B9F; padding: 16px 32px; display: flex;
+          align-items: center; justify-content: space-between; flex-shrink: 0;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .tv-header-left { display: flex; align-items: center; gap: 20px; }
+        .tv-logo-wrapper {
+          width: 64px; height: 64px; border-radius: 18px; background: #fff;
+          display: flex; align-items: center; justify-content: center;
+          overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .tv-brand { display: flex; flex-direction: column; text-align: left; }
+        .tv-brand-title { color: #fff; font-weight: 950; font-size: 32px; line-height: 1; letter-spacing: -0.5px; }
+        .tv-brand-subtitle { color: #93C5FD; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 3px; margin-top: 4px; }
+        .tv-monitor-info {
+          margin-left: 40px; padding: 12px 32px; background: #fff; border-radius: 24px;
+          display: flex; align-items: center; gap: 20px; box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+          text-align: left;
+        }
+        .tv-clock-container { text-align: right; }
+        .tv-clock-val { color: #fff; font-weight: 950; font-size: 64px; font-variant-numeric: tabular-nums; line-height: 0.9; }
+        .tv-clock-date { color: #93C5FD; font-size: 16px; font-weight: 800; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .tv-header-actions { display: flex; align-items: center; gap: 12px; }
+        .tv-table-wrapper { flex: 1; overflow: hidden; padding: 24px 32px; }
+        .tv-table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .tv-th-lap { background: #1A4B9F; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; padding: 20px 12px; border-radius: 24px 0 0 24px; width: 100px; text-align: center; }
+        .tv-th-jam { background: #1A4B9F; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; padding: 20px 12px; width: 140px; text-align: center; }
+        .tv-th-day { background: #1A4B9F; color: #fff; font-size: 20px; font-weight: 950; text-transform: uppercase; padding: 20px 12px; text-align: center; border-left: 2px solid rgba(255,255,255,0.1); }
+        .tv-td-lap { background: #1A4B9F; text-align: center; vertical-align: middle; border-radius: 24px 0 0 24px; padding: 24px 12px; }
+        .tv-td-lap-num { color: #fff; font-size: 96px; font-weight: 950; line-height: 1; margin-top: 10px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
+        .tv-td-lap-status { color: #6EE7B7; font-size: 14px; font-weight: 900; text-transform: uppercase; margin-top: 24px; background: rgba(255,255,255,0.15); border-radius: 16px; padding: 10px 20px; display: inline-block; border: 1px solid rgba(255,255,255,0.1); }
+        .tv-td-jam { text-align: center; padding: 12px; border-left: 4px solid #E0E7FF; width: 140px; }
+        .tv-td-jam-val { font-size: 42px; font-weight: 950; font-family: monospace; color: #1E3A8A; line-height: 1; }
+        .tv-td-cell { padding: 12px; border-left: 1px solid #E2E8F0; }
+        .tv-footer { background: #fff; border-top: 2px solid #E2E8F0; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .tv-legend-items { display: flex; gap: 60px; }
+        .tv-cell-label { font-size: 18px; }
+        .tv-cell-empty-label { font-size: 14px; }
+
+        /* RESPONSIVE STYLES (Mobile & Tablet / Lebar Layar < 1024px) */
+        @media (max-width: 1024px) {
+          .tv-container { overflow-y: auto; position: relative; height: auto; min-height: 100vh; }
+          .tv-header { padding: 16px; flex-direction: column; gap: 16px; align-items: stretch; text-align: center; }
+          .tv-header-left { flex-direction: column; gap: 12px; align-items: center; }
+          .tv-logo-wrapper { width: 48px; height: 48px; border-radius: 12px; }
+          .tv-brand { text-align: center; }
+          .tv-brand-title { font-size: 22px; text-align: center; }
+          .tv-brand-subtitle { font-size: 10px; letter-spacing: 2px; }
+          .tv-monitor-info { margin-left: 0; padding: 10px 16px; border-radius: 16px; gap: 12px; justify-content: center; }
+          .tv-monitor-info span { font-size: 14px !important; }
+          .tv-clock-container { text-align: center; margin-top: 4px; }
+          .tv-clock-val { font-size: 36px; }
+          .tv-clock-date { font-size: 13px; margin-top: 4px; }
+          .tv-header-actions { justify-content: center; margin-top: 8px; }
+          .tv-table-wrapper { overflow-x: auto; padding: 12px 16px; }
+          .tv-table { width: 980px; height: auto; border-spacing: 0 8px; }
+          .tv-th-lap { width: 60px; padding: 12px 4px; font-size: 10px; }
+          .tv-th-jam { width: 80px; padding: 12px 4px; font-size: 10px; }
+          .tv-th-day { font-size: 14px; padding: 12px 8px; }
+          .tv-td-lap { padding: 12px 6px; width: 60px; }
+          .tv-td-lap-num { font-size: 40px; }
+          .tv-td-lap-status { font-size: 10px; padding: 4px 8px; margin-top: 10px; }
+          .tv-td-jam { width: 80px; padding: 8px; }
+          .tv-td-jam-val { font-size: 22px; }
+          .tv-cell-label { font-size: 12px; }
+          .tv-cell-empty-label { font-size: 9px; }
+          .tv-footer { flex-direction: column; gap: 16px; padding: 16px; text-align: center; }
+          .tv-legend-items { flex-wrap: wrap; justify-content: center; gap: 16px 24px; }
+          .tv-legend-items > div { gap: 8px !important; }
+          .tv-legend-items span { font-size: 11px !important; }
+        }
       `}</style>
     </div>
   );

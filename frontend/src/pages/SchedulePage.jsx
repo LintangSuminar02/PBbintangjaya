@@ -55,6 +55,8 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
 
   const [weekOffset, setWeekOffset] = useState(calculateInitialOffset());
   const [selectedSlots, setSelectedSlots] = useState([]);
+  const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  const [selectedDayIdx, setSelectedDayIdx] = useState(todayIdx);
   const [bookings, setBookings] = useState([]);
   const [memberSchedules, setMemberSchedules] = useState([]);
 
@@ -139,15 +141,48 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
           </motion.div>
         )}
 
+        {/* Mobile Day Selector Tabs */}
+        <div className="flex overflow-x-auto gap-2 pb-4 mb-4 md:hidden no-scrollbar">
+          {DAY_NAMES.map((name, idx) => {
+            const isActive = idx === selectedDayIdx;
+            const isToday = weekDates[idx] === todayStr;
+            return (
+              <button
+                key={name}
+                type="button"
+                onClick={() => setSelectedDayIdx(idx)}
+                className={`flex-shrink-0 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all border ${
+                  isActive 
+                    ? 'bg-[#1A4B9F] text-white border-[#1A4B9F] shadow-lg shadow-blue-200' 
+                    : isToday 
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                      : 'bg-white text-zinc-500 border-zinc-100 hover:border-zinc-200'
+                }`}
+              >
+                {name}
+                <span className="block text-[8px] font-medium opacity-60 mt-0.5">{weekDates[idx]}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Schedule Board */}
         <div className="bg-white rounded-[40px] shadow-2xl border-4 border-white overflow-hidden overflow-x-auto">
-          <div className="min-w-[1200px]">
+          <div className="w-full md:min-w-[1200px]">
             {/* Header Hari */}
-            <div className="grid grid-cols-[100px_100px_repeat(7,1fr)] bg-zinc-50 border-b border-zinc-100">
-              <div className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-r border-zinc-100">Lap</div>
-              <div className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-r border-zinc-100">Waktu</div>
+            <div className="grid grid-cols-[60px_60px_1fr] md:grid-cols-[100px_100px_repeat(7,1fr)] bg-zinc-50 border-b border-zinc-100">
+              <div className="p-4 md:p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-r border-zinc-100 text-center flex items-center justify-center">Lap</div>
+              <div className="p-4 md:p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest border-r border-zinc-100 text-center flex items-center justify-center">Waktu</div>
+              
+              {/* Mobile Single Day Header */}
+              <div className={`p-3 text-center border-r border-zinc-100 md:hidden bg-blue-50/50 flex flex-col justify-center items-center`}>
+                <p className="text-xs font-black text-zinc-800">{DAY_NAMES[selectedDayIdx]}</p>
+                <p className="text-[10px] font-bold text-zinc-400">{weekDates[selectedDayIdx]}</p>
+              </div>
+
+              {/* Desktop 7 Days Header */}
               {DAY_NAMES.map((name, i) => (
-                <div key={i} className={`p-6 text-center border-r border-zinc-100 last:border-r-0 ${
+                <div key={i} className={`hidden md:block p-6 text-center border-r border-zinc-100 last:border-r-0 ${
                   weekDates[i] === quickSearch?.date ? 'bg-blue-50 border-b-2 border-primary' : 
                   weekDates[i] === todayStr ? 'bg-emerald-50' : ''
                 }`}>
@@ -166,79 +201,87 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
                   PILIH JADWAL {court.name}
                 </div>
 
-                {HOURS.map((time, tIdx) => (
-                  <div key={time} className="grid grid-cols-[100px_100px_repeat(7,1fr)] hover:bg-zinc-50/30 transition-colors border-b border-zinc-50">
-                    <div className="p-4 flex items-center justify-center border-r border-zinc-100 bg-zinc-50/20 font-black text-primary/10 text-2xl italic">{cIdx + 1}</div>
-                    <div className="p-4 flex items-center justify-center border-r border-zinc-100 font-mono text-[11px] font-bold text-rose-500 bg-zinc-50/10">{time}</div>
-                    
-                    {weekDates.map((date, dIdx) => {
-                      const slotId = `${court.id}-${date}-${time}`;
-                      const isPicked = selectedSlots.some(s => s.id === slotId);
-                      const isPast = date < todayStr || (date === todayStr && parseInt(time) < currentHour);
+                {HOURS.map((time, tIdx) => {
+                  // Helper function to render a slot
+                  const renderSlot = (date, dIdx, isMobileMode) => {
+                    const slotId = `${court.id}-${date}-${time}`;
+                    const isPicked = selectedSlots.some(s => s.id === slotId);
+                    const isPast = date < todayStr || (date === todayStr && parseInt(time) < currentHour);
 
-                      // Search filter logic
-                      const isMatch = (name) => {
-                        if (!quickSearch?.name) return true;
-                        return name?.toLowerCase().includes(quickSearch.name.toLowerCase());
-                      };
+                    const isMatch = (name) => {
+                      if (!quickSearch?.name) return true;
+                      return name?.toLowerCase().includes(quickSearch.name.toLowerCase());
+                    };
 
-                      const member = memberSchedules.find(m => 
-                        m.is_active && Number(m.court_id) === Number(court.id) && 
-                        Number(m.day_of_week) === (dIdx === 6 ? 7 : dIdx + 1) && 
-                        parseInt(m.start_time) <= parseInt(time) && parseInt(m.end_time) > parseInt(time)
-                      );
-                      const booking = !member && bookings.find(b => 
-                        (b.status === 'Pending' || b.status === 'Confirmed') &&
-                        Number(b.court_id) === Number(court.id) && 
-                        b.booking_date === date && 
-                        parseInt(b.start_time) <= parseInt(time) && parseInt(b.end_time) > parseInt(time)
-                      );
+                    const member = memberSchedules.find(m => 
+                      m.is_active && Number(m.court_id) === Number(court.id) && 
+                      Number(m.day_of_week) === (dIdx === 6 ? 7 : dIdx + 1) && 
+                      parseInt(m.start_time) <= parseInt(time) && parseInt(m.end_time) > parseInt(time)
+                    );
+                    const booking = !member && bookings.find(b => 
+                      (b.status === 'Pending' || b.status === 'Confirmed') &&
+                      Number(b.court_id) === Number(court.id) && 
+                      b.booking_date === date && 
+                      parseInt(b.start_time) <= parseInt(time) && parseInt(b.end_time) > parseInt(time)
+                    );
 
-                      const showMember = member && isMatch(member.member_name);
-                      const showBooking = booking && isMatch(booking.customer_full_name);
-                      const isOccupiedByOthers = (member && !showMember) || (booking && !showBooking);
+                    const showMember = member && isMatch(member.member_name);
+                    const showBooking = booking && isMatch(booking.customer_full_name);
+                    const isOccupiedByOthers = (member && !showMember) || (booking && !showBooking);
 
-                      return (
-                        <div key={dIdx} className={`p-1 border-r border-zinc-50 last:border-r-0 min-h-[80px] ${date === todayStr ? 'bg-emerald-50/10' : ''} ${isPast ? 'opacity-60 grayscale-[0.5]' : ''}`}>
-                          {showMember ? (
-                            <div className="h-full w-full rounded-xl bg-purple-100 border border-purple-200 flex flex-col items-center justify-center p-2 text-center shadow-sm">
-                              <span className="text-[7px] font-black text-purple-400 uppercase mb-0.5">MEMBER PB</span>
-                              <span className="text-[10px] font-black text-purple-800 uppercase leading-tight line-clamp-2">{member.member_name}</span>
-                            </div>
-                          ) : showBooking ? (
-                            <div className={`h-full w-full rounded-xl border flex flex-col items-center justify-center p-2 text-center shadow-sm ${booking.status === 'Confirmed' ? 'bg-blue-600 border-blue-700 text-white' : 'bg-amber-50 border-amber-200'}`}>
-                              {booking.status === 'Confirmed' ? (
-                                <span className="text-[11px] font-black uppercase leading-tight line-clamp-2 px-1">{booking.customer_full_name}</span>
-                              ) : (
-                                <>
-                                  <span className="text-[7px] font-black uppercase mb-0.5 text-zinc-400">ANTRIAN</span>
-                                  <span className="text-[10px] font-black uppercase leading-tight line-clamp-2 text-amber-700">{booking.customer_full_name}</span>
-                                </>
-                              )}
-                            </div>
-                          ) : isOccupiedByOthers ? (
-                            <div className="h-full w-full rounded-xl bg-zinc-50/50 border border-zinc-100 flex items-center justify-center opacity-20">
-                              <span className="text-[8px] font-bold text-zinc-300">TERISI</span>
-                            </div>
-                          ) : (
-                            <div 
-                              onClick={() => !isPast && toggleSlot(court, time, date, DAY_NAMES[dIdx])}
-                              className={`h-full w-full rounded-xl border-2 border-dashed flex items-center justify-center transition-all ${
-                                isPast ? 'bg-zinc-50 border-zinc-100 cursor-not-allowed' :
-                                isPicked ? 'bg-[#1A4B9F] border-[#1A4B9F] text-white shadow-lg scale-95 cursor-pointer' : 
-                                'border-zinc-100 hover:bg-emerald-50 hover:border-emerald-200 cursor-pointer'
-                              }`}
-                            >
-                              <span className={`text-[9px] font-black uppercase tracking-widest ${isPast ? 'text-zinc-300' : isPicked ? 'text-white' : 'text-zinc-200'}`}>
-                                {isPast ? 'TUTUP' : isPicked ? 'OK ✓' : 'KOSONG'}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
+                    return (
+                      <div key={dIdx} className={`p-1 border-r border-zinc-50 last:border-r-0 min-h-[80px] ${isMobileMode ? 'md:hidden' : 'hidden md:block'} ${date === todayStr ? 'bg-emerald-50/10' : ''} ${isPast ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+                        {showMember ? (
+                          <div className="h-full w-full rounded-xl bg-purple-100 border border-purple-200 flex flex-col items-center justify-center p-2 text-center shadow-sm">
+                            <span className="text-[7px] font-black text-purple-400 uppercase mb-0.5">MEMBER PB</span>
+                            <span className="text-[10px] font-black text-purple-800 uppercase leading-tight line-clamp-2">{member.member_name}</span>
+                          </div>
+                        ) : showBooking ? (
+                          <div className={`h-full w-full rounded-xl border flex flex-col items-center justify-center p-2 text-center shadow-sm ${booking.status === 'Confirmed' ? 'bg-blue-600 border-blue-700 text-white' : 'bg-amber-50 border-amber-200'}`}>
+                            {booking.status === 'Confirmed' ? (
+                              <span className="text-[11px] font-black uppercase leading-tight line-clamp-2 px-1">{booking.customer_full_name}</span>
+                            ) : (
+                              <>
+                                <span className="text-[7px] font-black uppercase mb-0.5 text-zinc-400">ANTRIAN</span>
+                                <span className="text-[10px] font-black uppercase leading-tight line-clamp-2 text-amber-700">{booking.customer_full_name}</span>
+                              </>
+                            )}
+                          </div>
+                        ) : isOccupiedByOthers ? (
+                          <div className="h-full w-full rounded-xl bg-zinc-50/50 border border-zinc-100 flex items-center justify-center opacity-20">
+                            <span className="text-[8px] font-bold text-zinc-300">TERISI</span>
+                          </div>
+                        ) : (
+                          <div 
+                            onClick={() => !isPast && toggleSlot(court, time, date, DAY_NAMES[dIdx])}
+                            className={`h-full w-full rounded-xl border-2 border-dashed flex items-center justify-center transition-all ${
+                              isPast ? 'bg-zinc-50 border-zinc-100 cursor-not-allowed' :
+                              isPicked ? 'bg-[#1A4B9F] border-[#1A4B9F] text-white shadow-lg scale-95 cursor-pointer' : 
+                              'border-zinc-100 hover:bg-emerald-50 hover:border-emerald-200 cursor-pointer'
+                            }`}
+                          >
+                            <span className={`text-[9px] font-black uppercase tracking-widest ${isPast ? 'text-zinc-300' : isPicked ? 'text-white' : 'text-zinc-200'}`}>
+                              {isPast ? 'TUTUP' : isPicked ? 'OK ✓' : 'KOSONG'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  };
+
+                  return (
+                    <div key={time} className="grid grid-cols-[60px_60px_1fr] md:grid-cols-[100px_100px_repeat(7,1fr)] hover:bg-zinc-50/30 transition-colors border-b border-zinc-50">
+                      <div className="p-2 md:p-4 flex items-center justify-center border-r border-zinc-100 bg-zinc-50/20 font-black text-primary/10 text-lg md:text-2xl italic">{cIdx + 1}</div>
+                      <div className="p-2 md:p-4 flex items-center justify-center border-r border-zinc-100 font-mono text-[10px] md:text-[11px] font-bold text-rose-500 bg-zinc-50/10">{time}</div>
+                      
+                      {/* Mobile Slot */}
+                      {renderSlot(weekDates[selectedDayIdx], selectedDayIdx, true)}
+
+                      {/* Desktop Slots */}
+                      {weekDates.map((date, dIdx) => renderSlot(date, dIdx, false))}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>

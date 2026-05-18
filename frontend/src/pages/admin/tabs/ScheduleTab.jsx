@@ -6,7 +6,7 @@ const HOURS = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','
 
 const ScheduleTab = ({ courts = [], bookings = [], memberSchedules = [], weekDates = [], weekOffset = 0 }) => {
   return (
-    <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden flex flex-col h-[70vh]">
+    <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden flex flex-col h-[60vh] md:h-[70vh]">
       {/* Container untuk scroll horizontal dan vertikal */}
       <div className="overflow-auto flex-1">
         <div className="min-w-[1000px] relative">
@@ -86,8 +86,8 @@ const ScheduleTab = ({ courts = [], bookings = [], memberSchedules = [], weekDat
       </div>
       
       {/* Footer info kecil */}
-      <div className="bg-zinc-50 px-6 py-2 border-t border-zinc-100 flex items-center justify-between">
-        <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Gunakan scroll mouse untuk navigasi horizontal & vertikal</p>
+      <div className="bg-zinc-50 px-4 md:px-6 py-2 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+        <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Geser secara horizontal & vertikal untuk melihat jadwal lengkap</p>
         <div className="flex gap-4">
           <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" /><span className="text-[9px] font-bold text-zinc-500">FIX</span></div>
           <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" /><span className="text-[9px] font-bold text-zinc-500">ANTRI</span></div>

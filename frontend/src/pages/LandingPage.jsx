@@ -22,13 +22,13 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
       className="pt-20"
     >
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center bg-hero-pattern">
-        <div className="max-w-4xl px-8 text-center text-white z-10">
+      <section className="relative h-[650px] sm:h-[600px] flex items-center justify-center bg-hero-pattern px-4">
+        <div className="max-w-4xl text-center text-white z-10">
           <motion.h1 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl font-bold mb-6 drop-shadow-lg leading-tight text-white"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg leading-tight text-white"
           >
             Tingkatkan Permainan Anda dengan Pemesanan Presisi
           </motion.h1>
@@ -36,7 +36,7 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-lg mb-10 max-w-2xl mx-auto drop-shadow-md text-white"
+            className="text-sm sm:text-base md:text-lg mb-10 max-w-2xl mx-auto drop-shadow-md text-white opacity-90"
           >
             Akses lapangan bulu tangkis premium di Purbalingga. Ketersediaan instan, penjadwalan mulus, dan fasilitas kelas turnamen di ujung jari Anda.
           </motion.p>
@@ -46,22 +46,22 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center gap-1 max-w-3xl mx-auto border-2 border-primary-container"
+            className="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center gap-1 max-w-3xl mx-auto border border-[#E5E7EB]"
           >
-            <div className="flex items-center flex-1 px-6 py-4 w-full border-b md:border-b-0 md:border-r border-zinc-100">
-              <User className="w-5 h-5 text-primary mr-3" />
+            <div className="flex items-center flex-1 px-4 sm:px-6 py-3 sm:py-4 w-full border-b md:border-b-0 md:border-r border-zinc-100">
+              <User className="w-5 h-5 text-primary mr-3 flex-shrink-0" />
               <input 
-                className="w-full border-none focus:ring-0 text-zinc-800 font-medium bg-transparent outline-none" 
+                className="w-full border-none focus:ring-0 text-zinc-800 font-medium bg-transparent outline-none text-sm" 
                 placeholder="Nama Pemesan" 
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="flex items-center flex-1 px-6 py-4 w-full">
-              <Calendar className="w-5 h-5 text-primary mr-3" />
+            <div className="flex items-center flex-1 px-4 sm:px-6 py-3 sm:py-4 w-full">
+              <Calendar className="w-5 h-5 text-primary mr-3 flex-shrink-0" />
               <input 
-                className="w-full border-none focus:ring-0 text-zinc-800 font-medium bg-transparent outline-none appearance-none" 
+                className="w-full border-none focus:ring-0 text-zinc-800 font-medium bg-transparent outline-none appearance-none text-sm" 
                 placeholder="Pilih Tanggal" 
                 type="date"
                 value={date}
@@ -70,7 +70,7 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
             </div>
             <button 
               onClick={handleSearch}
-              className="bg-primary hover:bg-primary-container text-white font-bold px-10 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 w-full md:w-auto uppercase tracking-wider"
+              className="bg-primary hover:bg-[#153B80] text-white font-bold px-10 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 w-full md:w-auto uppercase tracking-wider text-xs whitespace-nowrap"
             >
               Cari Lapangan
             </button>
@@ -79,48 +79,47 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
       </section>
 
       {/* Info Bar */}
-      <section className="bg-zinc-50 py-8 border-b border-outline-variant">
-        <div className="max-w-7xl mx-auto px-8 flex flex-wrap justify-center gap-16">
+      <section className="bg-zinc-50 py-8 border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row flex-wrap justify-center items-start sm:items-center gap-6 sm:gap-12 md:gap-16">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-emerald-100 rounded-full">
-              <Verified className="w-8 h-8 text-emerald-600" />
+            <div className="p-3 bg-emerald-100 rounded-full flex-shrink-0">
+              <Verified className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600" />
             </div>
             <div>
               <p className="font-bold text-[#1A4B9F] text-xs uppercase tracking-wider">KARPET SINTETIS PRO</p>
-              <p className="text-sm text-outline">Standar turnamen BWF</p>
+              <p className="text-xs sm:text-sm text-zinc-500">Standar turnamen BWF</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-full">
-              <Bolt className="w-8 h-8 text-blue-600" />
+            <div className="p-3 bg-blue-100 rounded-full flex-shrink-0">
+              <Bolt className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
             </div>
             <div>
               <p className="font-bold text-[#1A4B9F] text-xs uppercase tracking-wider">BOOKING INSTAN</p>
-              <p className="text-sm text-outline">Tanpa wajib login</p>
+              <p className="text-xs sm:text-sm text-zinc-500">Tanpa wajib login</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-amber-100 rounded-full">
-              <Users className="w-8 h-8 text-amber-600" />
+            <div className="p-3 bg-amber-100 rounded-full flex-shrink-0">
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-amber-600" />
             </div>
             <div>
               <p className="font-bold text-[#1A4B9F] text-xs uppercase tracking-wider">FASILITAS NYAMAN</p>
-              <p className="text-sm text-outline">Kantin, Toilet, & Parkir</p>
+              <p className="text-xs sm:text-sm text-zinc-500">Kantin, Toilet, & Parkir</p>
             </div>
           </div>
         </div>
       </section>
 
-
       {/* Featured Courts */}
-      <section className="py-20 max-w-7xl mx-auto px-8">
-        <div className="flex justify-between items-end mb-12">
+      <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-12">
           <div>
-            <h2 className="text-3xl text-zinc-900 mb-2 font-bold">Lapangan Elit Unggulan</h2>
-            <p className="text-outline">Fasilitas berperingkat teratas untuk permainan kompetitif dan rekreasi.</p>
+            <h2 className="text-2xl sm:text-3xl text-zinc-900 mb-2 font-bold">Lapangan Elit Unggulan</h2>
+            <p className="text-xs sm:text-sm text-zinc-500">Fasilitas berperingkat teratas untuk permainan kompetitif dan rekreasi.</p>
           </div>
-          <button onClick={() => setPage('schedule')} className="text-primary font-bold flex items-center gap-2 hover:underline group">
-            Lihat Semua Lapangan <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <button onClick={() => setPage('schedule')} className="text-primary font-bold text-xs sm:text-sm flex items-center gap-2 hover:underline group w-fit">
+            Lihat Semua Lapangan <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
         
@@ -163,8 +162,8 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
       </section>
 
       {/* Rules Section */}
-      <section className="py-24 bg-zinc-50">
-        <div className="max-w-7xl mx-auto px-8">
+      <section className="py-16 sm:py-24 bg-zinc-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="text-center mb-16">
             <h2 className="text-[10px] font-black text-[#1A4B9F] uppercase tracking-[0.3em] mb-3">Ketentuan & Etika</h2>
             <h3 className="text-4xl font-bold text-zinc-900">Tata Tertib Hall</h3>

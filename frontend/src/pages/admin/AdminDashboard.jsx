@@ -10,6 +10,7 @@ import {
   Search,
   Bell,
   ShieldCheck,
+  Menu,
 } from 'lucide-react';
 
 // --- Tab Components ---
@@ -66,6 +67,7 @@ const TAB_TITLES = {
 const AdminDashboard = ({ onLogout, API_URL }) => {
   const { addToast } = useToast();
   const [activeTab,    setActiveTab]    = useState('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [bookings,     setBookings]     = useState([]);
   const [courts,       setCourts]       = useState([]);
   const [settings,     setSettings]     = useState({});
@@ -206,22 +208,36 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
   return (
     <div className="min-h-screen bg-[#F8F9FB] flex">
 
+      {/* Sidebar Mobile Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ─────────────────────────────── */}
-      <aside className="w-64 bg-white border-r border-zinc-200 hidden lg:flex flex-col fixed h-full z-30">
+      <aside 
+        className={`w-64 bg-white border-r border-zinc-200 flex flex-col fixed h-full z-40 transition-transform duration-300 lg:translate-x-0 lg:flex ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         <div className="p-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#1A4B9F] flex items-center justify-center overflow-hidden">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.innerHTML = '<span style="font-size: 20px">🏸</span>';
-                }}
-              />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#1A4B9F] flex items-center justify-center overflow-hidden">
+                <img 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = '<span style="font-size: 20px">🏸</span>';
+                  }}
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-[#1A4B9F]">PB Bintang Jaya</h1>
             </div>
-            <h1 className="text-2xl font-bold text-[#1A4B9F]">PB Bintang Jaya</h1>
           </div>
           <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
@@ -233,7 +249,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
           {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id)}
+              onClick={() => { setActiveTab(id); setIsSidebarOpen(false); }}
               className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium transition-all ${
                 activeTab === id ? 'bg-[#1A4B9F] text-white' : 'text-zinc-500 hover:bg-zinc-50'
               }`}
@@ -246,7 +262,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
             <p className="px-4 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Administrasi</p>
           </div>
           <button
-            onClick={() => setActiveTab('settings')}
+            onClick={() => { setActiveTab('settings'); setIsSidebarOpen(false); }}
             className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'settings' ? 'bg-[#1A4B9F] text-white' : 'text-zinc-500 hover:bg-zinc-50'
             }`}
@@ -254,7 +270,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
             <SettingsIcon className="w-5 h-5" /> Pengaturan
           </button>
           <button
-            onClick={onLogout}
+            onClick={() => { onLogout(); setIsSidebarOpen(false); }}
             className="flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium text-rose-500 hover:bg-rose-50"
           >
             <LogOut className="w-5 h-5" /> Keluar
@@ -263,32 +279,39 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
       </aside>
 
       {/* ── Main content ─────────────────────────── */}
-      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen w-full overflow-hidden">
 
         {/* Top bar */}
-        <header className="h-20 bg-[#F8F9FB] flex items-center justify-between px-10 sticky top-0 z-20 border-b border-zinc-100">
-          <div className="flex items-center gap-6">
-            <h2 className="text-xl font-bold text-zinc-800">{TAB_TITLES[activeTab]}</h2>
+        <header className="h-20 bg-[#F8F9FB] flex items-center justify-between px-4 sm:px-8 md:px-10 sticky top-0 z-20 border-b border-zinc-100 gap-4">
+          <div className="flex items-center gap-2 sm:gap-6 min-w-0">
+            {/* Hamburger Button for Mobile/Tablet */}
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl text-zinc-500 hover:bg-zinc-100 hover:text-[#1A4B9F] transition-all active:scale-95 flex-shrink-0"
+              title="Menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <h2 className="text-sm sm:text-lg md:text-xl font-bold text-zinc-800 truncate">{TAB_TITLES[activeTab]}</h2>
             
             {activeTab === 'schedule' && (
-              <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-zinc-100 shadow-sm ml-4 scale-90">
-                <button onClick={() => setWeekOffset(prev => Math.max(0, prev - 1))} className="p-1.5 rounded-lg hover:bg-zinc-50 text-zinc-500"><ChevronLeft className="w-4 h-4"/></button>
-                <div className="px-3 font-bold text-[11px] text-zinc-500 uppercase tracking-widest whitespace-nowrap">Minggu Ke-{weekOffset + 1}</div>
-                <button onClick={() => setWeekOffset(prev => Math.min(4, prev + 1))} className="p-1.5 rounded-lg hover:bg-zinc-50 text-zinc-500"><ChevronRight className="w-4 h-4"/></button>
+              <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-zinc-100 shadow-sm ml-1 sm:ml-4 scale-75 sm:scale-90 flex-shrink-0">
+                <button onClick={() => setWeekOffset(prev => Math.max(0, prev - 1))} className="p-1 rounded-lg hover:bg-zinc-50 text-zinc-500"><ChevronLeft className="w-4 h-4"/></button>
+                <div className="px-1.5 sm:px-3 font-bold text-[9px] sm:text-[11px] text-zinc-500 uppercase tracking-widest whitespace-nowrap">W-{weekOffset + 1}</div>
+                <button onClick={() => setWeekOffset(prev => Math.min(4, prev + 1))} className="p-1 rounded-lg hover:bg-zinc-50 text-zinc-500"><ChevronRight className="w-4 h-4"/></button>
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-6">
-
+          <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
             <div className="relative flex items-center">
               <Search className="absolute left-3 w-4 h-4 text-zinc-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={activeTab === 'courts' ? 'Cari lapangan...' : activeTab === 'bookings' ? 'Cari nama pemesan...' : 'Cari...'}
-                className="bg-white border border-zinc-200 rounded-lg py-2 pl-10 pr-4 text-sm w-64 outline-none focus:ring-1 focus:ring-[#1A4B9F] transition-all"
+                placeholder={activeTab === 'courts' ? 'Cari...' : activeTab === 'bookings' ? 'Cari...' : 'Cari...'}
+                className="bg-white border border-zinc-200 rounded-lg py-2 pl-9 pr-2 text-xs w-28 sm:w-48 md:w-64 outline-none focus:ring-1 focus:ring-[#1A4B9F] transition-all"
               />
             </div>
             <button 
@@ -296,9 +319,9 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
               title={`${pendingCount} Pesanan butuh konfirmasi`}
               onClick={() => setActiveTab('bookings')}
             >
-              <Bell className="w-6 h-6" />
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
               {pendingCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-[#F8F9FB]">
+                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border border-[#F8F9FB]">
                   {pendingCount}
                 </span>
               )}
@@ -307,7 +330,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
         </header>
 
         {/* Tab content */}
-        <div className="p-10 space-y-10">
+        <div className="p-4 sm:p-6 md:p-10 space-y-6 md:space-y-10">
           {activeTab === 'overview' && (
             <OverviewTab bookings={bookings} courts={courts} loading={loading} />
           )}

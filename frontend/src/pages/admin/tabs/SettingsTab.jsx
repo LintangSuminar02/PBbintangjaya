@@ -92,7 +92,7 @@ const SettingsTab = ({ API_URL }) => {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#1A4B9F] mb-1">Manajemen Admin</h1>
           <p className="text-zinc-400 text-sm font-medium">Kelola akun pengelola yang memiliki akses ke sistem PB Bintang Jaya.</p>
@@ -103,7 +103,7 @@ const SettingsTab = ({ API_URL }) => {
             setFormData({ username: '', password: '', name: '', email: '', role: 'admin' });
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 bg-[#1A4B9F] text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-blue-200 hover:scale-[1.02] active:scale-95 transition-all"
+          className="flex items-center gap-2 bg-[#1A4B9F] text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-blue-200 hover:scale-[1.02] active:scale-95 transition-all w-fit"
         >
           <UserPlus className="w-5 h-5" />
           Tambah Admin
@@ -111,60 +111,62 @@ const SettingsTab = ({ API_URL }) => {
       </div>
 
       <div className="bg-white rounded-[32px] border border-zinc-100 shadow-sm overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-zinc-50 border-b border-zinc-100">
-              <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Admin</th>
-              <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Kontak</th>
-              <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Peran</th>
-              <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-50">
-            {users.map((user) => (
-              <tr key={user.id} className="hover:bg-zinc-50/50 transition-colors group">
-                <td className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#1A4B9F]">
-                      <User className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-zinc-800">{user.name || 'Admin'}</p>
-                      <p className="text-xs text-zinc-400 font-mono">@{user.username}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="p-6">
-                  <div className="flex items-center gap-2 text-zinc-500">
-                    <Mail className="w-4 h-4 opacity-40" />
-                    <span className="text-sm font-medium">{user.email || '-'}</span>
-                  </div>
-                </td>
-                <td className="p-6">
-                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase rounded-full border border-emerald-100">
-                    {user.role}
-                  </span>
-                </td>
-                <td className="p-6 text-right">
-                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                    <button 
-                      onClick={() => handleEdit(user)}
-                      className="p-2 text-zinc-400 hover:text-[#1A4B9F] hover:bg-blue-50 rounded-lg transition-all"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(user.id)}
-                      className="p-2 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr className="bg-zinc-50 border-b border-zinc-100">
+                <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Admin</th>
+                <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Kontak</th>
+                <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Peran</th>
+                <th className="p-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest text-right">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-zinc-50">
+              {users.map((user) => (
+                <tr key={user.id} className="hover:bg-zinc-50/50 transition-colors group">
+                  <td className="p-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#1A4B9F]">
+                        <User className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-zinc-800">{user.name || 'Admin'}</p>
+                        <p className="text-xs text-zinc-400 font-mono">@{user.username}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <div className="flex items-center gap-2 text-zinc-500">
+                      <Mail className="w-4 h-4 opacity-40" />
+                      <span className="text-sm font-medium">{user.email || '-'}</span>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase rounded-full border border-emerald-100">
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="p-6 text-right">
+                    <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
+                      <button 
+                        onClick={() => handleEdit(user)}
+                        className="p-2 text-zinc-400 hover:text-[#1A4B9F] hover:bg-blue-50 rounded-lg transition-all"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(user.id)}
+                        className="p-2 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {users.length === 0 && (
           <div className="p-20 text-center">
             <Shield className="w-12 h-12 text-zinc-100 mx-auto mb-4" />

@@ -27,7 +27,7 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, i) => (
           <motion.div key={i} className="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm">
             <div className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center mb-4`}>

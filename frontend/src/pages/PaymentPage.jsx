@@ -62,11 +62,11 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }}
-      className="pt-32 pb-20 max-w-6xl mx-auto px-8"
+      className="pt-24 sm:pt-32 pb-20 max-w-6xl mx-auto px-4 sm:px-8"
     >
       <div className="flex flex-col lg:flex-row gap-12">
         <div className="flex-1 space-y-8">
-           <div className="bg-white p-8 rounded-[32px] border border-zinc-100 shadow-xl shadow-zinc-200/40">
+           <div className="bg-white p-6 sm:p-8 rounded-[32px] border border-zinc-100 shadow-xl shadow-zinc-200/40">
               <h3 className="text-xl font-bold text-zinc-800 mb-6">Lapangan Terpilih</h3>
               <div className="rounded-2xl overflow-hidden h-48 mb-6">
                 <img src={selection.court_image} className="w-full h-full object-cover" />
@@ -100,8 +100,8 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
            </div>
         </div>
 
-        <div className="flex-1 bg-white p-10 rounded-[32px] border border-zinc-100 shadow-xl shadow-zinc-200/40">
-           <h3 className="text-2xl font-bold text-zinc-800 mb-10">Detail Pembayaran</h3>
+        <div className="flex-1 bg-white p-6 sm:p-10 rounded-[32px] border border-zinc-100 shadow-xl shadow-zinc-200/40">
+           <h3 className="text-2xl font-bold text-zinc-800 mb-8 sm:mb-10">Detail Pembayaran</h3>
            <div className="space-y-6">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Nama Pemesan</label>

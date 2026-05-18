@@ -40,7 +40,7 @@ const MyBookings = ({ API_URL }) => {
   });
 
   return (
-    <div className="pt-32 pb-20 max-w-4xl mx-auto px-8">
+    <div className="pt-24 sm:pt-32 pb-20 max-w-4xl mx-auto px-4 sm:px-8">
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-4xl font-display font-bold text-primary mb-2">Riwayat Pemesanan</h1>
@@ -103,28 +103,30 @@ const MyBookings = ({ API_URL }) => {
                 {/* Status bar */}
                 <div className={`w-1.5 flex-shrink-0 ${cfg.dot}`} />
 
-                <div className="flex-1 px-6 py-5 flex items-center gap-5">
-                  {/* Icon */}
-                  <div className={`w-10 h-10 rounded-xl ${cfg.bg} flex items-center justify-center flex-shrink-0`}>
-                    <CalendarRange className={`w-4 h-4 ${cfg.text}`} />
-                  </div>
+                <div className="flex-1 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    {/* Icon */}
+                    <div className={`w-10 h-10 rounded-xl ${cfg.bg} flex items-center justify-center flex-shrink-0`}>
+                      <CalendarRange className={`w-4 h-4 ${cfg.text}`} />
+                    </div>
 
-                  {/* Info utama: nama & jadwal */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <User className="w-3 h-3 text-zinc-400 flex-shrink-0" />
-                      <p className="font-bold text-zinc-800 text-sm truncate">
-                        {b.customer_full_name || b.customer_name || 'Tamu'}
+                    {/* Info utama: nama & jadwal */}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <User className="w-3 h-3 text-zinc-400 flex-shrink-0" />
+                        <p className="font-bold text-zinc-800 text-sm truncate">
+                          {b.customer_full_name || b.customer_name || 'Tamu'}
+                        </p>
+                      </div>
+                      <p className="text-xs font-bold text-primary">{b.court_name || `Lapangan ${b.court_id}`}</p>
+                      <p className="text-xs text-zinc-400 font-mono mt-0.5">
+                        {b.booking_date} &nbsp;·&nbsp; {b.start_time?.slice(0,5)} – {b.end_time?.slice(0,5)}
                       </p>
                     </div>
-                    <p className="text-xs font-bold text-primary">{b.court_name || `Lapangan ${b.court_id}`}</p>
-                    <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                      {b.booking_date} &nbsp;·&nbsp; {b.start_time?.slice(0,5)} – {b.end_time?.slice(0,5)}
-                    </p>
                   </div>
 
                   {/* Status badge */}
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${cfg.bg} border ${cfg.border} flex-shrink-0`}>
+                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${cfg.bg} border ${cfg.border} w-fit sm:flex-shrink-0`}>
                     <StatusIcon className={`w-3 h-3 ${cfg.text}`} />
                     <span className={`text-[10px] font-black uppercase tracking-wider ${cfg.text}`}>
                       {cfg.label}
