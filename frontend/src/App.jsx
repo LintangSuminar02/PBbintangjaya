@@ -17,7 +17,7 @@ import DisplayPage    from './pages/DisplayPage';
 import { ToastProvider } from './context/ToastContext';
 
 // --- Global Config ---
-const API_URL = 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('explore');
