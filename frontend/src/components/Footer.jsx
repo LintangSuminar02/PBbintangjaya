@@ -47,8 +47,8 @@ const Footer = () => (
             </div>
           </div>
 
-          {/* Bottom Embedded Map Part - Clickable with pointer-events-none */}
-          <div className="w-full h-40 relative overflow-hidden bg-zinc-950 border-t border-zinc-800/80 pointer-events-none">
+          {/* Bottom Embedded Map Part - Clickable Overlay for Direct Link Redirect */}
+          <div className="w-full h-40 relative overflow-hidden bg-zinc-950 border-t border-zinc-800/80">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.843640242226!2d109.33322237466847!3d-7.384892092624595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6559007e00a88b%3A0x710e8ef1301fe8fa!2sHALL%20BADMINTON%20BINTANG%20JAYA%20SPORT!5e0!3m2!1sid!2sid!4v1716104800000!5m2!1sid!2sid"
               width="100%" 
@@ -59,6 +59,8 @@ const Footer = () => (
               referrerPolicy="no-referrer-when-downgrade"
               className="transition-all duration-500 group-hover:scale-105"
             ></iframe>
+            {/* Transparent click catcher to trigger parent anchor navigation on all platforms */}
+            <div className="absolute inset-0 bg-transparent z-10"></div>
             <div className="absolute inset-0 pointer-events-none border-t border-zinc-800/80 group-hover:border-emerald-500/10 transition-all duration-300"></div>
           </div>
         </a>
