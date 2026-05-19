@@ -3,7 +3,7 @@ import { Maximize2, Minimize2 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
-const HOURS = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
+const HOURS = ['07.00-08.00', '08.00-09.00', '09.00-10.00', '10.00-11.00', '11.00-12.00', '12.00-13.00', '13.00-14.00', '14.00-15.00', '15.00-16.00', '16.00-17.00', '17.00-18.00', '18.00-19.00', '19.00-20.00', '20.00-21.00', '21.00-22.00'];
 const DAY_NAMES = ['SENIN','SELASA','RABU','KAMIS',"JUM'AT",'SABTU','MINGGU'];
 const PAGE_SIZE = 6; // Menampilkan 6 jam per slide agar font bisa sangat besar
 
@@ -131,6 +131,7 @@ export default function DisplayPage({ onExit }) {
       const bStart = parseInt(b.start_time, 10);
       const bEnd   = parseInt(b.end_time, 10);
       return (
+        (b.status === 'Pending' || b.status === 'Confirmed') &&
         Number(b.court_id) === Number(courtId) &&
         bDateStr === targetDate &&
         slotH >= bStart &&
@@ -207,7 +208,9 @@ export default function DisplayPage({ onExit }) {
               <div style={{ width: 2, height: 40, background: '#E2E8F0' }} className="hidden sm:block" />
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: 11, fontWeight: 900, color: '#64748B', textTransform: 'uppercase', letterSpacing: 2 }}>Waktu</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: '#1E3A8A', lineHeight: 1 }}>{currentSlide.hours[0]} - {currentSlide.hours[currentSlide.hours.length - 1]}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: '#1E3A8A', lineHeight: 1 }}>
+                  {currentSlide.hours[0]?.split('-')[0]} - {currentSlide.hours[currentSlide.hours.length - 1]?.split('-')[1]}
+                </span>
               </div>
             </div>
           )}
@@ -260,7 +263,7 @@ export default function DisplayPage({ onExit }) {
 
           <tbody key={activeSlideIdx} className="fade-in-slide">
             {currentSlide && currentSlide.hours.map((time, hi) => {
-              const isNow  = String(currentHourInt).padStart(2, '0') + ':00' === time;
+              const isNow  = currentHourInt === parseInt(time, 10);
               const rowBg  = isNow  ? '#ECFDF5' : (hi % 2 === 0 ? '#fff' : '#F9FBFF');
 
               return (
@@ -371,13 +374,13 @@ export default function DisplayPage({ onExit }) {
         .tv-table-wrapper { flex: 1; overflow: hidden; padding: 24px 32px; }
         .tv-table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 0 12px; }
         .tv-th-lap { background: #1A4B9F; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; padding: 20px 12px; border-radius: 24px 0 0 24px; width: 100px; text-align: center; }
-        .tv-th-jam { background: #1A4B9F; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; padding: 20px 12px; width: 140px; text-align: center; }
+        .tv-th-jam { background: #1A4B9F; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; padding: 20px 12px; width: 240px; text-align: center; }
         .tv-th-day { background: #1A4B9F; color: #fff; font-size: 20px; font-weight: 950; text-transform: uppercase; padding: 20px 12px; text-align: center; border-left: 2px solid rgba(255,255,255,0.1); }
         .tv-td-lap { background: #1A4B9F; text-align: center; vertical-align: middle; border-radius: 24px 0 0 24px; padding: 24px 12px; }
         .tv-td-lap-num { color: #fff; font-size: 96px; font-weight: 950; line-height: 1; margin-top: 10px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
         .tv-td-lap-status { color: #6EE7B7; font-size: 14px; font-weight: 900; text-transform: uppercase; margin-top: 24px; background: rgba(255,255,255,0.15); border-radius: 16px; padding: 10px 20px; display: inline-block; border: 1px solid rgba(255,255,255,0.1); }
-        .tv-td-jam { text-align: center; padding: 12px; border-left: 4px solid #E0E7FF; width: 140px; }
-        .tv-td-jam-val { font-size: 42px; font-weight: 950; font-family: monospace; color: #1E3A8A; line-height: 1; }
+        .tv-td-jam { text-align: center; padding: 12px; border-left: 4px solid #E0E7FF; width: 240px; }
+        .tv-td-jam-val { font-size: 26px; font-weight: 950; font-family: monospace; color: #1E3A8A; line-height: 1; }
         .tv-td-cell { padding: 12px; border-left: 1px solid #E2E8F0; }
         .tv-footer { background: #fff; border-top: 2px solid #E2E8F0; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .tv-legend-items { display: flex; gap: 60px; }
@@ -402,13 +405,13 @@ export default function DisplayPage({ onExit }) {
           .tv-table-wrapper { overflow-x: auto; padding: 12px 16px; }
           .tv-table { width: 980px; height: auto; border-spacing: 0 8px; }
           .tv-th-lap { width: 60px; padding: 12px 4px; font-size: 10px; }
-          .tv-th-jam { width: 80px; padding: 12px 4px; font-size: 10px; }
+          .tv-th-jam { width: 130px; padding: 12px 4px; font-size: 10px; }
           .tv-th-day { font-size: 14px; padding: 12px 8px; }
           .tv-td-lap { padding: 12px 6px; width: 60px; }
           .tv-td-lap-num { font-size: 40px; }
           .tv-td-lap-status { font-size: 10px; padding: 4px 8px; margin-top: 10px; }
-          .tv-td-jam { width: 80px; padding: 8px; }
-          .tv-td-jam-val { font-size: 22px; }
+          .tv-td-jam { width: 130px; padding: 8px; }
+          .tv-td-jam-val { font-size: 14px; }
           .tv-cell-label { font-size: 12px; }
           .tv-cell-empty-label { font-size: 9px; }
           .tv-footer { flex-direction: column; gap: 16px; padding: 16px; text-align: center; }

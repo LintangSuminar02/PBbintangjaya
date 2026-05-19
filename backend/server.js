@@ -894,10 +894,10 @@ app.put('/api/settings', async (req, res) => {
   try {
     await db.query(`
       CREATE TABLE IF NOT EXISTS member_schedules (
-        id           INT AUTO_INCREMENT PRIMARY KEY,
+        id           SERIAL PRIMARY KEY,
         member_name  VARCHAR(100) NOT NULL,
         court_id     INT NOT NULL,
-        day_of_week  TINYINT NOT NULL COMMENT '1=Senin, 2=Selasa ... 7=Minggu',
+        day_of_week  SMALLINT NOT NULL,
         start_time   TIME NOT NULL,
         end_time     TIME NOT NULL,
         is_active    BOOLEAN DEFAULT TRUE,

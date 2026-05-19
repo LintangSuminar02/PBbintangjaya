@@ -21,8 +21,8 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
     try {
       // Loop through all selected slots and book each one
       const bookingPromises = selection.all_slots.map(slot => {
-        const startTimeStr = slot.time;
-        const endTimeStr = `${(parseInt(startTimeStr) + 1).toString().padStart(2, '0')}:00`;
+        const startTimeStr = `${parseInt(slot.time).toString().padStart(2, '0')}:00`;
+        const endTimeStr = `${(parseInt(slot.time) + 1).toString().padStart(2, '0')}:00`;
         
         return fetch(`${API_URL}/bookings`, {
           method: 'POST',
@@ -85,7 +85,7 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
                       <div key={idx} className="flex justify-between items-center text-sm p-2 bg-white rounded-xl border border-zinc-50">
                         <span className="font-bold text-zinc-700">{slot.dayName}, {slot.date}</span>
                         <span className="font-mono text-primary font-black bg-blue-50 px-2 py-0.5 rounded-lg text-xs">
-                          {slot.time} - {(parseInt(slot.time)+1).toString().padStart(2,'0')}:00
+                          {slot.time}
                         </span>
                       </div>
                     ))}

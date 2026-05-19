@@ -135,11 +135,6 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
             >
               <div className="h-48 relative overflow-hidden">
                 <img src={court.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={court.name} />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
-                    <Star className="w-3 h-3 fill-primary" /> 4.9
-                  </span>
-                </div>
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-zinc-900 mb-1">{court.name}</h3>
