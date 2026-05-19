@@ -27,7 +27,7 @@ const Footer = () => (
       <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4 w-full">
         <h4 className="text-xs font-bold text-white uppercase tracking-widest text-emerald-400">Lokasi Kami</h4>
         <a 
-          href="https://www.google.com/maps/place/HALL+BADMINTON+BINTANG+JAYA+SPORT/@-7.3848925,109.335414,907m/data=!3m2!1e3!4b1"
+          href="https://maps.app.goo.gl/THsnUf3YsCd5Ptx3A"
           target="_blank"
           rel="noopener noreferrer"
           className="w-full max-w-sm rounded-2xl border border-zinc-800/80 bg-zinc-900/40 overflow-hidden shadow-lg group hover:border-emerald-500/30 hover:bg-zinc-900/80 transition-all duration-300 flex flex-col cursor-pointer"
