@@ -44,10 +44,10 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
       const allSuccess = results.every(r => r.success);
 
       if (allSuccess) {
-        addToast(`Pemesanan ${results.length} Slot Berhasil! Menunggu verifikasi pembayaran.`, 'success');
+        addToast(`Pemesanan ${results.length} Slot Berhasil Terkonfirmasi secara Instan!`, 'success');
         setPage('my-bookings');
       } else {
-        addToast('Beтельные slot gagal dipesan. Silakan cek riwayat Anda.', 'error');
+        addToast('Beberapa slot gagal dipesan. Silakan cek riwayat Anda.', 'error');
       }
     } catch (err) {
       addToast('Terjadi kesalahan koneksi.', 'error');

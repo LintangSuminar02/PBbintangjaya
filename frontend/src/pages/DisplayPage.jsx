@@ -306,7 +306,6 @@ export default function DisplayPage({ onExit }) {
         <div className="tv-legend-items">
           {[
             { color: '#BFDBFE', border: '#93C3FD', label: 'Terkonfirmasi' },
-            { color: '#FEF3C7', border: '#FCD34D', label: 'Antrian (FCFS)', dashed: true },
             { color: '#EDE9FE', border: '#C4B5FD', label: 'Jadwal Member PB' },
             { color: '#F9FAFB', border: '#E2E8F0', label: 'Kosong / Tersedia', dashed: true },
           ].map(({ color, border, label, dashed }) => (

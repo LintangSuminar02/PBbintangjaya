@@ -11,17 +11,15 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#1A4B9F] mb-1">Manajemen Pesanan</h1>
           <p className="text-zinc-500 text-sm font-medium">
-            Sistem FCFS Aktif: Urutan pertama (paling bawah di antrian masuk) diprioritaskan.
+            Sistem Pemesanan Instan: Semua pesanan terkonfirmasi langsung secara real-time.
           </p>
         </div>
         <div className="flex gap-4 p-4 bg-white rounded-2xl border border-zinc-100 shadow-sm flex-wrap text-[10px] font-black uppercase tracking-widest">
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"/> Confirmed</span>
-          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-400 inline-block"/> Pending</span>
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-400 inline-block"/> Rejected</span>
         </div>
       </div>

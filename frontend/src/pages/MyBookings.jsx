@@ -60,7 +60,7 @@ const MyBookings = ({ API_URL }) => {
           />
         </div>
         <div className="flex gap-2 flex-wrap">
-          {['all', 'Confirmed', 'Pending', 'Rejected'].map(s => (
+          {['all', 'Confirmed', 'Rejected'].map(s => (
             <button
               key={s}
               onClick={() => setFilterStatus(s)}

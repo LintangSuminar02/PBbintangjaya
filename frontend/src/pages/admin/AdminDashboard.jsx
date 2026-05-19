@@ -316,15 +316,10 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
             </div>
             <button 
               className="relative p-2 text-zinc-400 hover:text-[#1A4B9F] transition-colors"
-              title={`${pendingCount} Pesanan butuh konfirmasi`}
+              title="Notifikasi"
               onClick={() => setActiveTab('bookings')}
             >
               <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
-              {pendingCount > 0 && (
-                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border border-[#F8F9FB]">
-                  {pendingCount}
-                </span>
-              )}
             </button>
           </div>
         </header>

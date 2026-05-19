@@ -14,8 +14,8 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
       icon: CreditCard, color: 'bg-blue-50 text-blue-600'
     },
     {
-      label: 'Pesanan Aktif',
-      val: String(bData.filter(b => b?.status === 'Pending').length),
+      label: 'Pesanan Sukses',
+      val: String(bData.filter(b => b?.status === 'Confirmed').length),
       icon: CalendarRange, color: 'bg-emerald-50 text-emerald-600'
     },
     {
@@ -41,7 +41,7 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
 
       <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm overflow-hidden">
         <div className="p-8 border-b border-zinc-50">
-          <h3 className="text-xl font-bold text-zinc-800">Antrian Pesanan Terbaru</h3>
+          <h3 className="text-xl font-bold text-zinc-800">Pesanan Terbaru</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">

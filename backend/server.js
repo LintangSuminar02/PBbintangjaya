@@ -463,19 +463,19 @@ app.post('/api/bookings', async (req, res) => {
       });
     }
 
-    // Insert as Pending (First one to hit DB will be processed first by Admin)
+    // Insert as Confirmed directly (Direct Instant Booking after payment)
     await db.query("SET timezone = 'Asia/Jakarta'"); // Paksa zona waktu Jakarta
     const [rows] = await db.query(
       `INSERT INTO bookings 
-      (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending') RETURNING id`,
+      (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status, payment_status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Confirmed', 'Paid') RETURNING id`,
       [user_id || null, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name]
     );
 
     res.json({ 
       success: true, 
       id: rows[0].id, 
-      message: 'Pemesanan berhasil diajukan. Silakan lakukan pembayaran.' 
+      message: 'Pemesanan berhasil diajukan dan terkonfirmasi secara instan.' 
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
