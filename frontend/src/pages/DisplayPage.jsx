@@ -195,7 +195,7 @@ export default function DisplayPage({ onExit }) {
             />
           </div>
           <div className="tv-brand">
-            <div className="tv-brand-title">PB Bintang Jaya</div>
+            <div className="tv-brand-title">HALL BINTANG JAYA SPORT</div>
             <div className="tv-brand-subtitle">Papan Jadwal Live Monitor</div>
           </div>
           

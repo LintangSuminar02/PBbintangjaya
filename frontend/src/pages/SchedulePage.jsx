@@ -81,13 +81,21 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
     return () => clearInterval(iv);
   }, [API_URL]);
 
+  const getSlotPrice = (court, time) => {
+    const startHour = parseInt(time.split('.')[0] || time, 10);
+    if (startHour >= 17) {
+      return court.price + 5000;
+    }
+    return court.price;
+  };
+
   const toggleSlot = (court, time, date, dayName) => {
     const id = `${court.id}-${date}-${time}`;
     const exists = selectedSlots.find(s => s.id === id);
     if (exists) {
       setSelectedSlots(selectedSlots.filter(s => s.id !== id));
     } else {
-      setSelectedSlots([...selectedSlots, { id, court_id: court.id, court_name: court.name, time, date, dayName, price: court.price }]);
+      setSelectedSlots([...selectedSlots, { id, court_id: court.id, court_name: court.name, time, date, dayName, price: getSlotPrice(court, time) }]);
     }
   };
 
@@ -260,9 +268,16 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
                               'border-zinc-100 hover:bg-emerald-50 hover:border-emerald-200 cursor-pointer'
                             }`}
                           >
-                            <span className={`text-[9px] font-black uppercase tracking-widest ${isPast ? 'text-zinc-300' : isPicked ? 'text-white' : 'text-zinc-200'}`}>
-                              {isPast ? 'TUTUP' : isPicked ? 'OK ✓' : 'KOSONG'}
-                            </span>
+                            <div className="flex flex-col items-center gap-1 select-none">
+                              <span className={`text-[9px] font-black uppercase tracking-widest ${isPast ? 'text-zinc-300' : isPicked ? 'text-white' : 'text-zinc-400'}`}>
+                                {isPast ? 'TUTUP' : isPicked ? 'OK ✓' : 'KOSONG'}
+                              </span>
+                              {!isPast && !isPicked && (
+                                <span className="text-[8px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                                  {getSlotPrice(court, time) / 1000}k
+                                </span>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

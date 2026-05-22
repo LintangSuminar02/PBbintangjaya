@@ -95,7 +95,7 @@ const SettingsTab = ({ API_URL }) => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#1A4B9F] mb-1">Manajemen Admin</h1>
-          <p className="text-zinc-400 text-sm font-medium">Kelola akun pengelola yang memiliki akses ke sistem PB Bintang Jaya.</p>
+          <p className="text-zinc-400 text-sm font-medium">Kelola akun pengelola yang memiliki akses ke sistem HALL BINTANG JAYA SPORT.</p>
         </div>
         <button 
           onClick={() => {

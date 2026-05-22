@@ -162,7 +162,7 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
           <div className="text-center mb-16">
             <h2 className="text-[10px] font-black text-[#1A4B9F] uppercase tracking-[0.3em] mb-3">Ketentuan & Etika</h2>
             <h3 className="text-4xl font-bold text-zinc-900">Tata Tertib Hall</h3>
-            <p className="text-zinc-400 mt-4 max-w-xl mx-auto text-sm font-medium">Mohon dipatuhi demi kenyamanan dan keamanan bersama selama berada di area PB Bintang Jaya.</p>
+            <p className="text-zinc-400 mt-4 max-w-xl mx-auto text-sm font-medium">Mohon dipatuhi demi kenyamanan dan keamanan bersama selama berada di area HALL BINTANG JAYA SPORT.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -47,7 +47,7 @@ const LoginPage = ({ onLogin, API_URL }) => {
             <Lock className="w-8 h-8 text-[#1A4B9F]" />
           </div>
           <h2 className="text-3xl font-bold text-[#1A4B9F] mb-2">Login Admin</h2>
-          <p className="text-zinc-400 text-sm">Akses terbatas untuk personel PB Bintang Jaya</p>
+          <p className="text-zinc-400 text-sm">Akses terbatas untuk personel HALL BINTANG JAYA SPORT</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

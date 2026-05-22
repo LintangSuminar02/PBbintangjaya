@@ -112,8 +112,8 @@ async function initDB() {
     await pool.query(`
       INSERT INTO courts (name, type, location, price, status, image)
       VALUES 
-      ('Lapangan 1', 'Sintetis', 'Gedung Utama', 45000, 'Active', 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=800'),
-      ('Lapangan 2', 'Sintetis', 'Gedung Utama', 45000, 'Active', 'https://images.unsplash.com/photo-1545114472-c11ba7969388?auto=format&fit=crop&q=80&w=800')
+      ('Lapangan 1', 'Sintetis', 'Gedung Utama', 35000, 'Active', 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=800'),
+      ('Lapangan 2', 'Sintetis', 'Gedung Utama', 35000, 'Active', 'https://images.unsplash.com/photo-1545114472-c11ba7969388?auto=format&fit=crop&q=80&w=800')
     `);
     console.log('Default courts seeded.');
   }

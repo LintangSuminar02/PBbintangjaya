@@ -50,7 +50,7 @@ const Header = ({ currentPage, setPage, API_URL }) => {
       <div className="flex items-center gap-12">
         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setPage('explore')}>
           <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
-          <span className="font-display text-lg md:text-2xl font-bold text-primary">PB Bintang Jaya</span>
+          <span className="font-display text-lg md:text-2xl font-bold text-primary">HALL BINTANG JAYA SPORT</span>
         </div>
         <nav className="hidden md:flex items-center gap-10">
           <button 

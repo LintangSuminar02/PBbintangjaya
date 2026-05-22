@@ -13,13 +13,13 @@ const Footer = () => (
               e.target.style.display = 'none';
             }} 
           />
-          <span className="text-xl font-black text-white tracking-wide uppercase">PB Bintang Jaya</span>
+          <span className="text-xl font-black text-white tracking-wide uppercase">HALL BINTANG JAYA SPORT</span>
         </div>
         <p className="text-xs text-zinc-500 max-w-sm mt-1 leading-relaxed">
           Sistem pemesanan lapangan bulu tangkis premium dengan manajemen jadwal FCFS real-time.
         </p>
         <p className="text-[11px] text-zinc-600 mt-2">
-          © 2026 PB Bintang Jaya All rights reserved.
+          © 2026 HALL BINTANG JAYA SPORT All rights reserved.
         </p>
       </div>
 

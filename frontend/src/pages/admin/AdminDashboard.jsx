@@ -236,7 +236,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
                   }}
                 />
               </div>
-              <h1 className="text-2xl font-bold text-[#1A4B9F]">PB Bintang Jaya</h1>
+              <h1 className="text-2xl font-bold text-[#1A4B9F]">HALL BINTANG JAYA SPORT</h1>
             </div>
           </div>
           <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-2 flex items-center gap-1">
