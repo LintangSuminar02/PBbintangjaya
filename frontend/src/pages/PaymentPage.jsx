@@ -150,7 +150,7 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
   };
 
   if (bookedData) {
-    const adminPhone = "6285227181313"; // GANTI NOMOR WA ADMIN DI SINI
+    const adminPhone = "6287786722209"; // GANTI NOMOR WA ADMIN DI SINI
     const slotsText = bookedData.slots.map(s => `  * ${s.dayName}, ${s.date} (${s.time})`).join('\n');
     const message = `Halo Admin Hall Bintang Jaya Sport, saya baru saja melakukan pemesanan lapangan. Berikut rincian pesanan saya:
 
