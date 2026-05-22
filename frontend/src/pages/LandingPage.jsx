@@ -15,6 +15,14 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
     setPage('schedule');
   };
 
+  const getCurrentPrice = (basePrice) => {
+    const hour = new Date().getHours();
+    if (hour >= 17) {
+      return basePrice + 5000;
+    }
+    return basePrice;
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }} 
@@ -143,8 +151,13 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-zinc-50">
                   <div>
-                    <p className="text-[10px] text-outline font-bold uppercase tracking-wider">Mulai dari</p>
-                    <p className="font-bold text-primary">Rp {court.price?.toLocaleString()}/Jam</p>
+                    <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">
+                      Harga ({new Date().getHours() >= 17 ? '🌙 Sore' : '☀️ Pagi'})
+                    </p>
+                    <p className="font-extrabold text-primary text-base">Rp {getCurrentPrice(court.price)?.toLocaleString()}/Jam</p>
+                    <p className="text-[8px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full font-bold border border-emerald-100 mt-1 w-fit">
+                      Pagi: 35k | Sore: 40k
+                    </p>
                   </div>
                   <button onClick={() => { setTargetCourtId(court.id); setPage('schedule'); }} className="bg-primary-container/20 text-primary p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
                     <ArrowRight className="w-5 h-5" />
