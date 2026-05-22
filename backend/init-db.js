@@ -44,6 +44,7 @@ async function initDB() {
       type VARCHAR(100),
       location VARCHAR(255),
       price INT DEFAULT 0,
+      price_night INT DEFAULT 0,
       status VARCHAR(50) DEFAULT 'Active',
       image TEXT
     )
@@ -110,10 +111,10 @@ async function initDB() {
   const courts = await pool.query('SELECT COUNT(*) as count FROM courts');
   if (parseInt(courts.rows[0].count) === 0) {
     await pool.query(`
-      INSERT INTO courts (name, type, location, price, status, image)
+      INSERT INTO courts (name, type, location, price, price_night, status, image)
       VALUES 
-      ('Lapangan 1', 'Sintetis', 'Gedung Utama', 35000, 'Active', 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=800'),
-      ('Lapangan 2', 'Sintetis', 'Gedung Utama', 35000, 'Active', 'https://images.unsplash.com/photo-1545114472-c11ba7969388?auto=format&fit=crop&q=80&w=800')
+      ('Lapangan 1', 'Sintetis', 'Gedung Utama', 35000, 40000, 'Active', 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=800'),
+      ('Lapangan 2', 'Sintetis', 'Gedung Utama', 35000, 40000, 'Active', 'https://images.unsplash.com/photo-1545114472-c11ba7969388?auto=format&fit=crop&q=80&w=800')
     `);
     console.log('Default courts seeded.');
   }

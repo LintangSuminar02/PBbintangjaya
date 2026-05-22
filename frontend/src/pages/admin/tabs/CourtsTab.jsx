@@ -6,7 +6,7 @@ const STATUS_OPTIONS = ['Active', 'Maintenance', 'Repair'];
 const TYPE_OPTIONS   = ['Sintetis', 'Parquet', 'Vinyl', 'Kayu'];
 
 const EMPTY_COURT = {
-  name: '', type: 'Sintetis', location: '', price: 45000, status: 'Active', image: ''
+  name: '', type: 'Sintetis', location: '', price: 35000, price_night: 40000, status: 'Active', image: ''
 };
 
 // --- SUB-COMPONENT: CourtCard ---
@@ -47,7 +47,10 @@ const CourtCard = ({ c, i, setEditingCourt, onDeleteCourt }) => {
         <h3 className="font-bold text-zinc-800">{c.name}</h3>
         <p className="text-xs text-zinc-400 mb-4">{c.type} • {c.location || '—'}</p>
         <div className="flex justify-between items-center pt-4 border-t border-zinc-50">
-          <span className="font-bold text-[#1A4B9F]">Rp {c.price?.toLocaleString()}</span>
+          <div className="flex flex-col text-xs font-bold text-[#1A4B9F]">
+            <span>☀️ Siang: Rp {c.price?.toLocaleString()}</span>
+            <span>🌙 Malam: Rp {(c.price_night || (c.price + 5000))?.toLocaleString()}</span>
+          </div>
           <div className="flex gap-2">
             <button onClick={() => setEditingCourt(c)} className="p-2 text-zinc-400 hover:text-[#1A4B9F] hover:bg-blue-50 rounded-lg transition-all">
               <Edit className="w-4 h-4" />
@@ -150,16 +153,20 @@ const CourtsTab = ({ courts, editingCourt, setEditingCourt, onUpdateCourt, onAdd
                 <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Nama</label>
                 <input type="text" value={newCourt.name} onChange={e => setNewCourt({...newCourt, name: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
               </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Tipe</label>
+                <select value={newCourt.type} onChange={e => setNewCourt({...newCourt, type: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none">
+                  {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Tipe</label>
-                  <select value={newCourt.type} onChange={e => setNewCourt({...newCourt, type: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none">
-                    {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga Siang (08:00 - 17:00)</label>
+                  <input type="number" value={newCourt.price} onChange={e => setNewCourt({...newCourt, price: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga</label>
-                  <input type="number" value={newCourt.price} onChange={e => setNewCourt({...newCourt, price: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" />
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga Malam (17:00 - 21:00+)</label>
+                  <input type="number" value={newCourt.price_night} onChange={e => setNewCourt({...newCourt, price_night: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
                 </div>
               </div>
               <button type="submit" className="w-full bg-[#1A4B9F] text-white py-4 rounded-2xl font-bold shadow-xl">Simpan Lapangan</button>
@@ -181,16 +188,20 @@ const CourtsTab = ({ courts, editingCourt, setEditingCourt, onUpdateCourt, onAdd
                 <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Nama</label>
                 <input type="text" value={editingCourt.name} onChange={e => setEditingCourt({...editingCourt, name: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
               </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Tipe</label>
+                <select value={editingCourt.type} onChange={e => setEditingCourt({...editingCourt, type: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none">
+                  {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Tipe</label>
-                  <select value={editingCourt.type} onChange={e => setEditingCourt({...editingCourt, type: e.target.value})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none">
-                    {TYPE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga Siang (08:00 - 17:00)</label>
+                  <input type="number" value={editingCourt.price} onChange={e => setEditingCourt({...editingCourt, price: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga</label>
-                  <input type="number" value={editingCourt.price} onChange={e => setEditingCourt({...editingCourt, price: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" />
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Harga Malam (17:00 - 21:00+)</label>
+                  <input type="number" value={editingCourt.price_night || ''} onChange={e => setEditingCourt({...editingCourt, price_night: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-zinc-50 border border-zinc-100 p-4 rounded-2xl outline-none" required />
                 </div>
               </div>
               <button type="submit" className="w-full bg-[#1A4B9F] text-white py-4 rounded-2xl font-bold shadow-xl">Simpan Perubahan</button>

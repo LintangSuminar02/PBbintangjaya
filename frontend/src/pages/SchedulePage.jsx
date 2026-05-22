@@ -84,7 +84,7 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
   const getSlotPrice = (court, time) => {
     const startHour = parseInt(time.split('.')[0] || time, 10);
     if (startHour >= 17) {
-      return court.price + 5000;
+      return court.price_night || (court.price + 5000);
     }
     return court.price;
   };

@@ -484,12 +484,12 @@ app.post('/api/bookings', async (req, res) => {
 
 // Add new court
 app.post('/api/courts', async (req, res) => {
-  const { name, type, location, price, status, image } = req.body;
+  const { name, type, location, price, price_night, status, image } = req.body;
   if (!name) return res.status(400).json({ success: false, message: 'Nama lapangan wajib diisi.' });
   try {
     const [rows] = await db.query(
-      'INSERT INTO courts (name, type, location, price, status, image) VALUES (?, ?, ?, ?, ?, ?) RETURNING id',
-      [name, type || 'Sintetis', location || '', price || 0, status || 'Active', image || '']
+      'INSERT INTO courts (name, type, location, price, price_night, status, image) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id',
+      [name, type || 'Sintetis', location || '', price || 0, price_night || 0, status || 'Active', image || '']
     );
     res.json({ success: true, id: rows[0].id, message: 'Lapangan berhasil ditambahkan.' });
   } catch (err) {
@@ -542,11 +542,11 @@ app.post('/api/courts', async (req, res) => {
 // Update existing court
 app.patch('/api/courts/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, type, location, price, status, image } = req.body;
+  const { name, type, location, price, price_night, status, image } = req.body;
   try {
     await db.query(
-      'UPDATE courts SET name = ?, type = ?, location = ?, price = ?, status = ?, image = ? WHERE id = ?',
-      [name, type, location, price, status, image, id]
+      'UPDATE courts SET name = ?, type = ?, location = ?, price = ?, price_night = ?, status = ?, image = ? WHERE id = ?',
+      [name, type, location, price, price_night, status, image, id]
     );
     res.json({ success: true, message: 'Lapangan berhasil diperbarui' });
   } catch (err) {
