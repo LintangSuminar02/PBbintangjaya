@@ -345,6 +345,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
               onConfirm={handleConfirm}
               onReject={handleReject}
               onTogglePayment={handleTogglePayment}
+              API_URL={API_URL}
             />
           )}
           {activeTab === 'members' && (

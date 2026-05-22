@@ -1,7 +1,13 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 async function initDB() {
   const pool = new pg.Pool({
@@ -65,6 +71,7 @@ async function initDB() {
       payment_status VARCHAR(50) DEFAULT 'Unpaid',
       customer_phone VARCHAR(50),
       customer_full_name VARCHAR(255),
+      payment_proof VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (court_id) REFERENCES courts(id)

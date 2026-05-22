@@ -151,7 +151,7 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
                     <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-1 mb-1">
                       <MapPin className="w-3 h-3" /> {court.location}
                     </p>
-                    <p className="font-extrabold text-primary text-base">Rp {court.price?.toLocaleString()}/Jam</p>
+                    <p className="font-extrabold text-primary text-base">Rp {getCurrentPrice(court)?.toLocaleString()}/Jam</p>
                   </div>
                   <button onClick={() => { setTargetCourtId(court.id); setPage('schedule'); }} className="bg-primary-container/20 text-primary p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
                     <ArrowRight className="w-5 h-5" />

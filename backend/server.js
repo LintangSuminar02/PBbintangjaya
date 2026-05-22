@@ -9,10 +9,10 @@ import db from './db.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,6 +24,7 @@ app.use(cors({
 }));
 app.options('*', cors()); // handle preflight
 app.use(express.json({ limit: '10mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // ─────────────────────────────────────────────────
 // Swagger / OpenAPI Setup
@@ -417,7 +418,7 @@ app.get('/api/bookings', async (req, res) => {
     const [bookings] = await db.query(`
       SELECT 
         b.id, b.user_id, b.court_id, b.start_time, b.end_time, b.total_price, 
-        b.payment_method, b.payment_status, b.status, b.customer_phone, b.customer_full_name, b.created_at,
+        b.payment_method, b.payment_status, b.status, b.customer_phone, b.customer_full_name, b.payment_proof, b.created_at,
         TO_CHAR(b.booking_date, 'YYYY-MM-DD') as booking_date,
         u.username as customer_name, 
         c.name as court_name 
@@ -442,7 +443,8 @@ app.post('/api/bookings', async (req, res) => {
     total_price, 
     payment_method, 
     customer_phone, 
-    customer_full_name 
+    customer_full_name,
+    payment_proof_base64
   } = req.body;
   
   try {
@@ -463,19 +465,52 @@ app.post('/api/bookings', async (req, res) => {
       });
     }
 
-    // Insert as Confirmed directly (Direct Instant Booking after payment)
+    // Process base64 file upload if provided
+    let savedFilename = null;
+    if (payment_proof_base64) {
+      const matches = payment_proof_base64.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        const ext = matches[1];
+        const base64Data = matches[2];
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        // Import dynamic fs if not at top, but we will import it or use dynamic import/fs module
+        const fs = await import('fs');
+        const uploadsDir = path.join(__dirname, 'public/uploads');
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        
+        savedFilename = `proof-${Date.now()}-${Math.floor(Math.random() * 1000)}.${ext}`;
+        const filePath = path.join(uploadsDir, savedFilename);
+        fs.writeFileSync(filePath, buffer);
+      }
+    }
+
+    // Insert directly as Confirmed & Paid (Auto-confirmed as requested)
     await db.query("SET timezone = 'Asia/Jakarta'"); // Paksa zona waktu Jakarta
     const [rows] = await db.query(
       `INSERT INTO bookings 
-      (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status, payment_status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Confirmed', 'Paid') RETURNING id`,
-      [user_id || null, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name]
+      (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status, payment_status, payment_proof) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Confirmed', 'Paid', ?) RETURNING id`,
+      [user_id || null, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, savedFilename]
     );
+
+    // FCFS auto-reject: Auto-reject all other PENDING bookings for the same court/date that overlap this time
+    await db.query(`
+      UPDATE bookings 
+      SET status = 'Rejected'
+      WHERE court_id = ? AND booking_date = ? AND status = 'Pending'
+      AND (
+        (start_time <= ? AND end_time > ?) OR
+        (start_time < ? AND end_time >= ?)
+      )
+    `, [court_id, booking_date, start_time, start_time, end_time, end_time]);
 
     res.json({ 
       success: true, 
       id: rows[0].id, 
-      message: 'Pemesanan berhasil diajukan dan terkonfirmasi secara instan.' 
+      message: 'Pemesanan berhasil dikonfirmasi secara otomatis!' 
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

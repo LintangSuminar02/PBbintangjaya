@@ -1,7 +1,9 @@
-import React from 'react';
-import { CheckCircle, XCircle, CreditCard, Phone, MessageSquare } from 'lucide-react';
+import React, { useState } from 'react';
+import { CheckCircle, XCircle, CreditCard, Phone, MessageSquare, Eye } from 'lucide-react';
 
-const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
+const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment, API_URL }) => {
+  const [selectedProof, setSelectedProof] = useState(null);
+
   const openWA = (phone) => {
     if (!phone) return;
     const cleanPhone = phone.replace(/\D/g, '');
@@ -9,17 +11,20 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
     window.open(`https://wa.me/${waPhone}`, '_blank');
   };
 
+  const cleanApiUrl = API_URL ? API_URL.replace('/api', '') : 'http://localhost:3001';
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[#1A4B9F] mb-1">Manajemen Pesanan</h1>
           <p className="text-zinc-500 text-sm font-medium">
-            Sistem Pemesanan Instan: Semua pesanan terkonfirmasi langsung secara real-time.
+            Sistem Pemesanan FCFS: Tinjau bukti transfer dan konfirmasi booking untuk menyelesaikan pembayaran.
           </p>
         </div>
         <div className="flex gap-4 p-4 bg-white rounded-2xl border border-zinc-100 shadow-sm flex-wrap text-[10px] font-black uppercase tracking-widest">
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"/> Confirmed</span>
+          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"/> Pending</span>
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-400 inline-block"/> Rejected</span>
         </div>
       </div>
@@ -67,7 +72,7 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
                         <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
                           row.status === 'Confirmed' ? 'bg-emerald-50 text-emerald-600' :
                           row.status === 'Rejected'  ? 'bg-rose-50 text-rose-500' :
-                                                       'bg-amber-50 text-amber-600'
+                                                       'bg-amber-50 text-amber-600 animate-pulse'
                         }`}>
                           {row.status}
                         </span>
@@ -90,6 +95,19 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
                     </td>
                     <td className="px-4 py-5">
                       <p className="font-bold text-[#1A4B9F] text-sm">Rp {row.total_price?.toLocaleString() || '0'}</p>
+                      
+                      {/* BUKTI TRANSFER BADGE */}
+                      {row.payment_proof && (
+                        <button
+                          onClick={() => setSelectedProof(row.payment_proof)}
+                          className="flex items-center gap-1 mt-1 bg-blue-50 text-[#1A4B9F] hover:bg-[#1A4B9F] hover:text-white border border-blue-100 text-[9px] font-black uppercase px-2 py-0.5 rounded-lg transition-all"
+                          title="Klik untuk melihat bukti transfer asli"
+                        >
+                          <Eye className="w-3 h-3" />
+                          Lihat Bukti
+                        </button>
+                      )}
+
                       <button
                         onClick={() => onTogglePayment(row.id, row.payment_status === 'Paid' ? 'Unpaid' : 'Paid')}
                         className={`flex items-center gap-1.5 mt-1 text-[9px] font-black uppercase transition-all ${
@@ -124,7 +142,7 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
                         {row.status === 'Confirmed' && (
                           <button
                             onClick={() => onReject(row.id)}
-                            className="text-zinc-300 hover:text-rose-500 transition-all"
+                            className="text-rose-300 hover:text-rose-500 transition-all"
                             title="Batalkan"
                           >
                             <XCircle className="w-4 h-4" />
@@ -142,6 +160,36 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment }) => {
           <div className="p-20 text-center text-zinc-300 font-bold">Belum ada pesanan masuk.</div>
         )}
       </div>
+
+      {/* Modal Bukti Transfer */}
+      {selectedProof && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-[32px] overflow-hidden max-w-lg w-full border border-zinc-100 shadow-2xl p-6 relative">
+            <button 
+              onClick={() => setSelectedProof(null)}
+              className="absolute top-4 right-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-500 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all"
+            >
+              ✕
+            </button>
+            <h3 className="text-lg font-bold text-zinc-800 mb-4 font-display">Bukti Pembayaran Pelanggan</h3>
+            <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-zinc-50 flex items-center justify-center max-h-[450px]">
+              <img 
+                src={`${cleanApiUrl}/uploads/${selectedProof}`} 
+                className="max-h-[450px] w-full object-contain" 
+                alt="Bukti Transfer"
+              />
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={() => setSelectedProof(null)} 
+                className="bg-[#1A4B9F] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:scale-105 active:scale-95 transition-all"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
