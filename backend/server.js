@@ -467,23 +467,9 @@ app.post('/api/bookings', async (req, res) => {
     // Process base64 file upload if provided
     let savedFilename = null;
     if (payment_proof_base64) {
-      const matches = payment_proof_base64.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
-      if (matches && matches.length === 3) {
-        const ext = matches[1];
-        const base64Data = matches[2];
-        const buffer = Buffer.from(base64Data, 'base64');
-        
-        // Import dynamic fs if not at top, but we will import it or use dynamic import/fs module
-        const fs = await import('fs');
-        const uploadsDir = path.join(__dirname, 'public/uploads');
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
-        }
-        
-        savedFilename = `proof-${Date.now()}-${Math.floor(Math.random() * 1000)}.${ext}`;
-        const filePath = path.join(uploadsDir, savedFilename);
-        fs.writeFileSync(filePath, buffer);
-      }
+      // Vercel serverless functions cannot write to local disk.
+      // Save base64 string directly to DB since we have no external storage bucket.
+      savedFilename = payment_proof_base64;
     }
 
     // Insert directly as Confirmed & Paid (Auto-confirmed as requested)

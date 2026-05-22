@@ -174,7 +174,7 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment, API_URL }
             <h3 className="text-lg font-bold text-zinc-800 mb-4 font-display">Bukti Pembayaran Pelanggan</h3>
             <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-zinc-50 flex items-center justify-center max-h-[450px]">
               <img 
-                src={`${cleanApiUrl}/uploads/${selectedProof}`} 
+                src={selectedProof.startsWith('data:image') ? selectedProof : `${cleanApiUrl}/uploads/${selectedProof}`} 
                 className="max-h-[450px] w-full object-contain" 
                 alt="Bukti Transfer"
               />
