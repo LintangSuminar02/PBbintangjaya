@@ -145,19 +145,13 @@ const LandingPage = ({ setPage, courts, setQuickSearch, setTargetCourtId }) => {
                 <img src={court.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={court.name} />
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-zinc-900 mb-1">{court.name}</h3>
-                <div className="flex items-center text-xs text-outline mb-4">
-                  <MapPin className="w-3 h-3 mr-1" /> {court.location}
-                </div>
-                <div className="flex justify-between items-center pt-4 border-t border-zinc-50">
+                <h3 className="font-bold text-zinc-900 mb-4">{court.name}</h3>
+                <div className="flex justify-between items-center pt-4 border-t border-zinc-100">
                   <div>
-                    <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">
-                      Harga ({new Date().getHours() >= 17 ? '🌙 Sore' : '☀️ Pagi'})
+                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-1 mb-1">
+                      <MapPin className="w-3 h-3" /> {court.location}
                     </p>
-                    <p className="font-extrabold text-primary text-base">Rp {getCurrentPrice(court)?.toLocaleString()}/Jam</p>
-                    <p className="text-[8px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full font-bold border border-emerald-100 mt-1 w-fit">
-                      Pagi: {court.price / 1000}k | Sore: {(court.price_night || (court.price + 5000)) / 1000}k
-                    </p>
+                    <p className="font-extrabold text-primary text-base">Rp {court.price?.toLocaleString()}/Jam</p>
                   </div>
                   <button onClick={() => { setTargetCourtId(court.id); setPage('schedule'); }} className="bg-primary-container/20 text-primary p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
                     <ArrowRight className="w-5 h-5" />
