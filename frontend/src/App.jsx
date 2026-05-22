@@ -30,7 +30,7 @@ export default function App() {
   useEffect(() => {
     fetch(`${API_URL}/courts`)
       .then(res => res.json())
-      .then(data => setCourts(data))
+      .then(data => setCourts(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
   }, [currentPage]);
 

@@ -70,8 +70,10 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
         fetch(`${API_URL}/bookings`),
         fetch(`${API_URL}/member-schedules`),
       ]);
-      setBookings(await resB.json());
-      setMemberSchedules(await resM.json());
+      const bData = await resB.json();
+      const mData = await resM.json();
+      setBookings(Array.isArray(bData) ? bData : []);
+      setMemberSchedules(Array.isArray(mData) ? mData : []);
     } catch (err) { console.error(err); }
   };
 

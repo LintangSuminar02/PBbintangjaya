@@ -90,10 +90,14 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
         fetch(`${API_URL}/settings`),
         fetch(`${API_URL}/member-schedules`),
       ]);
-      setBookings(await resB.json());
-      setCourts(await resC.json());
-      setSettings(await resS.json());
-      setMemberSchedules(await resM.json());
+      const bData = await resB.json();
+      const cData = await resC.json();
+      const sData = await resS.json();
+      const mData = await resM.json();
+      setBookings(Array.isArray(bData) ? bData : []);
+      setCourts(Array.isArray(cData) ? cData : []);
+      setSettings(sData && !sData.error ? sData : {});
+      setMemberSchedules(Array.isArray(mData) ? mData : []);
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
