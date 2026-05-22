@@ -401,10 +401,9 @@ app.delete('/api/users/:id', async (req, res) => {
  *       400:
  *         description: Nama lapangan wajib diisi
  */
-// --- Court Routes ---
 app.get('/api/courts', async (req, res) => {
   try {
-    const [courts] = await db.query('SELECT * FROM courts');
+    const [courts] = await db.query('SELECT * FROM courts ORDER BY id');
     res.json(courts);
   } catch (err) {
     res.status(500).json({ error: err.message });
