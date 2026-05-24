@@ -8,7 +8,6 @@ import jwt from 'jsonwebtoken';
 import db from './db.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import midtransClient from 'midtrans-client';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,12 +26,7 @@ app.options('*', cors()); // handle preflight
 app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Initialize Midtrans
-const snap = new midtransClient.Snap({
-  isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
-  serverKey: process.env.MIDTRANS_SERVER_KEY,
-  clientKey: process.env.MIDTRANS_CLIENT_KEY
-});
+
 
 // ─────────────────────────────────────────────────
 // Swagger / OpenAPI Setup
@@ -418,108 +412,7 @@ app.get('/api/courts', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────
-// MIDTRANS PAYMENT ROUTES
-// ─────────────────────────────────────────────────
 
-app.post('/api/payment/token', async (req, res) => {
-  const { 
-    user_id, slots, total_price, customer_phone, customer_full_name, court_name
-  } = req.body;
-  
-  try {
-    // FCFS Check all slots
-    for (const slot of slots) {
-      const [conflicts] = await db.query(`
-        SELECT * FROM bookings 
-        WHERE court_id = ? AND booking_date = ? AND status = 'Confirmed'
-        AND (
-          (start_time <= ? AND end_time > ?) OR
-          (start_time < ? AND end_time >= ?)
-        )
-      `, [slot.court_id, slot.date, slot.start_time, slot.start_time, slot.end_time, slot.end_time]);
-
-      if (conflicts.length > 0) {
-        return res.status(400).json({ success: false, message: 'Beberapa slot ini sudah terpesan (FCFS).' });
-      }
-    }
-
-    const orderId = `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-    // Insert as Pending & Unpaid
-    await db.query("SET timezone = 'Asia/Jakarta'");
-    for (const slot of slots) {
-      await db.query(
-        `INSERT INTO bookings 
-        (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status, payment_status, midtrans_order_id) 
-        VALUES (?, ?, ?, ?, ?, ?, 'Midtrans', ?, ?, 'Pending', 'Unpaid', ?)`,
-        [user_id || null, slot.court_id, slot.date, slot.start_time, slot.end_time, slot.price, customer_phone, customer_full_name, orderId]
-      );
-    }
-
-    // Create Snap transaction
-    const parameter = {
-      transaction_details: {
-        order_id: orderId,
-        gross_amount: total_price
-      },
-      customer_details: {
-        first_name: customer_full_name,
-        phone: customer_phone
-      },
-      item_details: [{
-        id: `BOOKING-${orderId}`,
-        price: total_price,
-        quantity: 1,
-        name: `Sewa ${court_name} (${slots.length} Jam)`
-      }]
-    };
-
-    const transaction = await snap.createTransaction(parameter);
-    res.json({ success: true, token: transaction.token, order_id: orderId });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/api/payment/webhook', async (req, res) => {
-  try {
-    const notification = await snap.transaction.notification(req.body);
-    const { order_id, transaction_status, fraud_status } = notification;
-
-    if (transaction_status === 'capture' || transaction_status === 'settlement') {
-      if (fraud_status === 'challenge') {
-        // Handle challenge if necessary
-      } else {
-        // Success
-        const [rows] = await db.query('SELECT * FROM bookings WHERE midtrans_order_id = ?', [order_id]);
-        if (rows.length > 0) {
-          const booking = rows[0];
-          await db.query("UPDATE bookings SET status = 'Confirmed', payment_status = 'Paid' WHERE midtrans_order_id = ?", [order_id]);
-          
-          // FCFS auto-reject overlapping pending
-          await db.query(`
-            UPDATE bookings 
-            SET status = 'Rejected'
-            WHERE court_id = ? AND booking_date = ? AND status = 'Pending' AND id != ?
-            AND (
-              (start_time <= ? AND end_time > ?) OR
-              (start_time < ? AND end_time >= ?)
-            )
-          `, [booking.court_id, booking.booking_date, booking.id, booking.start_time, booking.start_time, booking.end_time, booking.end_time]);
-        }
-      }
-    } else if (transaction_status === 'cancel' || transaction_status === 'deny' || transaction_status === 'expire') {
-      await db.query("UPDATE bookings SET status = 'Cancelled' WHERE midtrans_order_id = ?", [order_id]);
-    }
-
-    res.status(200).json({ status: 'OK' });
-  } catch (err) {
-    console.error('Midtrans Webhook Error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // --- Booking Routes (FCFS Implementation) ---
 app.get('/api/bookings', async (req, res) => {
