@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Menu,
 } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 
 // --- Tab Components ---
 import OverviewTab        from './tabs/OverviewTab';
@@ -105,11 +106,21 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
     }
   };
 
-  // Poll every 10 seconds
+  // Listen for realtime updates
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000); // Poll every 5s for real-time feel
-    return () => clearInterval(interval);
+    
+    const channel = supabase
+      .channel('admin-dashboard')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => fetchData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'member_schedules' }, () => fetchData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'courts' }, () => fetchData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => fetchData())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
 

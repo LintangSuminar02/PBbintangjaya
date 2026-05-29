@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { CalendarRange, ChevronLeft, ChevronRight, Calendar, X, Clock, MapPin } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const DAY_NAMES = ['SENIN','SELASA','RABU','KAMIS',"JUM'AT",'SABTU','MINGGU'];
 const HOURS = ['07.00-08.00', '08.00-09.00', '09.00-10.00', '10.00-11.00', '11.00-12.00', '12.00-13.00', '13.00-14.00', '14.00-15.00', '15.00-16.00', '16.00-17.00', '17.00-18.00', '18.00-19.00', '19.00-20.00', '20.00-21.00', '21.00-22.00'];
@@ -79,8 +80,17 @@ const SchedulePage = ({ courts, onConfirm, API_URL, quickSearch, targetCourtId, 
 
   useEffect(() => {
     fetchAll();
-    const iv = setInterval(fetchAll, 10000);
-    return () => clearInterval(iv);
+    
+    // Mendengarkan perubahan di database via Supabase Realtime
+    const channel = supabase
+      .channel('schedule-page')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'member_schedules' }, () => fetchAll())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [API_URL]);
 
   const getSlotPrice = (court, time) => {

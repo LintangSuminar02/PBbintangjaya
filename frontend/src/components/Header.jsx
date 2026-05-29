@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, Clock, CheckCircle, Calendar, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '../lib/supabase';
 
 const Header = ({ currentPage, setPage, API_URL }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -28,8 +29,21 @@ const Header = ({ currentPage, setPage, API_URL }) => {
     };
 
     fetchActivities();
-    const iv = setInterval(fetchActivities, 15000);
-    return () => clearInterval(iv);
+    
+    // Listen for confirmed bookings via Supabase Realtime
+    const channel = supabase
+      .channel('header-notifications')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings', filter: "status=eq.'Confirmed'" }, () => {
+        fetchActivities();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'bookings', filter: "status=eq.'Confirmed'" }, () => {
+        fetchActivities();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [API_URL, recentActivities]);
 
   // Close dropdown when clicking outside

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Maximize2, Minimize2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -72,8 +73,18 @@ export default function DisplayPage({ onExit }) {
 
   useEffect(() => {
     fetchAll();
-    const iv = setInterval(fetchAll, 30000);
-    return () => clearInterval(iv);
+    
+    // Gunakan Supabase Realtime daripada setInterval 60 detik
+    const channel = supabase
+      .channel('display-page')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'member_schedules' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'courts' }, () => fetchAll())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Generate Slides: Tiap Slide = { court, courtIdx, hourSubset, pageLabel }

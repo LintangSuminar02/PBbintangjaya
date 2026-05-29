@@ -110,7 +110,7 @@ const PaymentPage = ({ selection, setPage, API_URL, currentUser, quickSearch }) 
 📅 *Jadwal Terpilih*:
 ${slotsText}
 
-Saya sudah mengunggah bukti pembayaran di sistem. Mohon konfirmasinya. Terima kasih!`;
+Saya sudah melakukan pembayaran sebesar Rp ${bookedData.total_price.toLocaleString()} via ${bookedData.method}. Pesanan saya sudah otomatis terkonfirmasi di sistem. Terima kasih!`;
 
     const encodedMessage = encodeURIComponent(message);
     const waUrl = `https://wa.me/${adminPhone}?text=${encodedMessage}`;
@@ -130,10 +130,10 @@ Saya sudah mengunggah bukti pembayaran di sistem. Mohon konfirmasinya. Terima ka
             <h2 className="text-3xl font-black text-zinc-800 font-display">Pemesanan Berhasil!</h2>
             <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest flex items-center justify-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Status: Terpesan (Menunggu Konfirmasi)
+              Status: Pembayaran Diterima (Otomatis Terkonfirmasi)
             </p>
             <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
-              Jadwal Anda sudah aman. Klik tombol di bawah ini untuk mengirim bukti pemesanan secara resmi ke WhatsApp Admin agar mempermudah koordinasi.
+              Jadwal Anda sudah aman dan otomatis terkonfirmasi oleh sistem. Klik tombol di bawah ini untuk mengirim notifikasi ke WhatsApp Admin.
             </p>
           </div>
 
@@ -381,7 +381,7 @@ Saya sudah mengunggah bukti pembayaran di sistem. Mohon konfirmasinya. Terima ka
               >
                 {loading ? 'Mengirim Data...' : (
                   <>
-                    {!proofBase64 ? 'Unggah Bukti Pembayaran Dahulu' : 'Kirim & Ajukan Pemesanan'}
+                    {!proofBase64 ? 'Unggah Bukti Pembayaran Dahulu' : 'Konfirmasi & Bayar Sekarang'}
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}

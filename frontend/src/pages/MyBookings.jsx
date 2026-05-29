@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { CalendarRange, History, Search, CheckCircle, Clock, XCircle, User } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const STATUS_CONFIG = {
   Confirmed: { label: 'Terkonfirmasi', icon: CheckCircle, bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-500' },
@@ -27,8 +28,18 @@ const MyBookings = ({ API_URL }) => {
       }
     };
     fetchBookings();
-    const interval = setInterval(fetchBookings, 10000);
-    return () => clearInterval(interval);
+    
+    const channel = supabase
+      .channel('my-bookings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        // Optimally we'd only fetch if the user's booking changed, but we fetch all for now since it's simple
+        fetchBookings();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [API_URL]);
 
   const filtered = bookings.filter(b => {
