@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { CreditCard, CalendarRange, Users, Trophy } from 'lucide-react';
+import { CreditCard, CalendarRange, Users, Trophy, CheckCircle, XCircle } from 'lucide-react';
 
-const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
+const OverviewTab = ({ bookings = [], courts = [], loading = false, onConfirm, onReject }) => {
   // Hard-check for arrays
   const bData = Array.isArray(bookings) ? bookings : [];
   const cData = Array.isArray(courts)   ? courts   : [];
@@ -50,6 +50,7 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
                 <th className="px-8 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">WAKTU</th>
                 <th className="px-8 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">PELANGGAN</th>
                 <th className="px-8 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">STATUS</th>
+                <th className="px-8 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest text-right">AKSI</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-50">
@@ -66,10 +67,32 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false }) => {
                       {booking?.status || 'Pending'}
                     </span>
                   </td>
+                  <td className="px-8 py-6 text-right">
+                    <div className="flex gap-2 justify-end opacity-100 transition-all">
+                      {booking?.status === 'Pending' && (
+                        <>
+                          <button
+                            onClick={() => onConfirm(booking.id)}
+                            className="bg-emerald-600 text-white p-1.5 rounded-lg shadow-sm hover:scale-110 active:scale-95 transition-all"
+                            title="Konfirmasi"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => onReject(booking.id)}
+                            className="bg-rose-50 text-rose-500 border border-rose-100 p-1.5 rounded-lg hover:scale-110 active:scale-95 transition-all"
+                            title="Tolak"
+                          >
+                            <XCircle className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
               {bData.length === 0 && (
-                <tr><td colSpan="3" className="px-8 py-10 text-center text-zinc-400 text-sm">Belum ada pesanan masuk.</td></tr>
+                <tr><td colSpan="4" className="px-8 py-10 text-center text-zinc-400 text-sm">Belum ada pesanan masuk.</td></tr>
               )}
             </tbody>
           </table>

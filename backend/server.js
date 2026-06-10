@@ -476,30 +476,19 @@ app.post('/api/bookings', async (req, res) => {
       savedFilename = payment_proof_base64;
     }
 
-    // Insert directly as Confirmed & Paid (Auto-confirmed as requested)
+    // Insert as Pending & Unpaid
     await db.query("SET timezone = 'Asia/Jakarta'"); // Paksa zona waktu Jakarta
     const [rows] = await db.query(
       `INSERT INTO bookings 
       (user_id, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, status, payment_status, payment_proof) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Confirmed', 'Paid', ?) RETURNING id`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', 'Unpaid', ?) RETURNING id`,
       [user_id || null, court_id, booking_date, start_time, end_time, total_price, payment_method, customer_phone, customer_full_name, savedFilename]
     );
-
-    // FCFS auto-reject: Auto-reject all other PENDING bookings for the same court/date that overlap this time
-    await db.query(`
-      UPDATE bookings 
-      SET status = 'Rejected'
-      WHERE court_id = ? AND booking_date = ? AND status = 'Pending'
-      AND (
-        (start_time <= ? AND end_time > ?) OR
-        (start_time < ? AND end_time >= ?)
-      )
-    `, [court_id, booking_date, start_time, start_time, end_time, end_time]);
 
     res.json({ 
       success: true, 
       id: rows[0].id, 
-      message: 'Pemesanan berhasil dikonfirmasi secara otomatis!' 
+      message: 'Pemesanan berhasil dibuat. Menunggu konfirmasi admin.' 
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

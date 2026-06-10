@@ -342,7 +342,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
         {/* Tab content */}
         <div className="p-4 sm:p-6 md:p-10 space-y-6 md:space-y-10">
           {activeTab === 'overview' && (
-            <OverviewTab bookings={bookings} courts={courts} loading={loading} />
+            <OverviewTab bookings={bookings} courts={courts} loading={loading} onConfirm={handleConfirm} onReject={handleReject} />
           )}
           {activeTab === 'schedule' && (
             <ScheduleTab 
