@@ -54,12 +54,12 @@ const OverviewTab = ({ bookings = [], courts = [], loading = false, onConfirm, o
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-50">
-              {bData.slice(0, 5).map((booking, i) => (
+              {[...bData].reverse().slice(0, 5).map((booking, i) => (
                 <tr key={i} className="hover:bg-zinc-50/50">
                   <td className="px-8 py-6 text-xs font-medium text-zinc-400 font-mono">
                     {booking?.created_at ? new Date(booking.created_at).toLocaleDateString('id-ID') : '-'}
                   </td>
-                  <td className="px-8 py-6 text-sm font-medium text-zinc-700">{booking?.customer_full_name || 'Umum'}</td>
+                  <td className="px-8 py-6 text-sm font-medium text-zinc-700">{booking?.customer_full_name || booking?.customer_name || 'Umum'}</td>
                   <td className="px-8 py-6">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${
                       booking?.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
