@@ -421,7 +421,9 @@ app.get('/api/bookings', async (req, res) => {
     const [bookings] = await db.query(`
       SELECT 
         b.id, b.user_id, b.court_id, b.start_time, b.end_time, b.total_price, 
-        b.payment_method, b.payment_status, b.status, b.customer_phone, b.customer_full_name, b.payment_proof, b.created_at,
+        b.payment_method, b.payment_status, b.status, b.customer_phone, b.customer_full_name, 
+        CASE WHEN b.payment_proof IS NOT NULL THEN true ELSE false END as has_payment_proof,
+        b.created_at,
         TO_CHAR(b.booking_date, 'YYYY-MM-DD') as booking_date,
         u.username as customer_name, 
         c.name as court_name 
@@ -431,6 +433,18 @@ app.get('/api/bookings', async (req, res) => {
       ORDER BY b.created_at ASC
     `);
     res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch payment proof for a specific booking
+app.get('/api/bookings/:id/proof', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await db.query('SELECT payment_proof FROM bookings WHERE id = ?', [id]);
+    if (rows.length === 0) return res.status(404).json({ success: false, message: 'Booking not found' });
+    res.json({ success: true, payment_proof: rows[0].payment_proof });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -3,6 +3,25 @@ import { CheckCircle, XCircle, CreditCard, Phone, MessageSquare, Eye } from 'luc
 
 const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment, API_URL }) => {
   const [selectedProof, setSelectedProof] = useState(null);
+  const [loadingProof, setLoadingProof] = useState(false);
+
+  const handleViewProof = async (id) => {
+    try {
+      setLoadingProof(id);
+      const res = await fetch(`${API_URL}/bookings/${id}/proof`);
+      const data = await res.json();
+      if (data.success) {
+        setSelectedProof(data.payment_proof);
+      } else {
+        alert('Gagal mengambil bukti pembayaran');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Terjadi kesalahan jaringan');
+    } finally {
+      setLoadingProof(false);
+    }
+  };
 
   const openWA = (phone) => {
     if (!phone) return;
@@ -97,14 +116,15 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment, API_URL }
                       <p className="font-bold text-[#1A4B9F] text-sm">Rp {row.total_price?.toLocaleString() || '0'}</p>
                       
                       {/* BUKTI TRANSFER BADGE */}
-                      {row.payment_proof && (
+                      {row.has_payment_proof && (
                         <button
-                          onClick={() => setSelectedProof(row.payment_proof)}
+                          onClick={() => handleViewProof(row.id)}
+                          disabled={loadingProof === row.id}
                           className="flex items-center gap-1 mt-1 bg-blue-50 text-[#1A4B9F] hover:bg-[#1A4B9F] hover:text-white border border-blue-100 text-[9px] font-black uppercase px-2 py-0.5 rounded-lg transition-all"
                           title="Klik untuk melihat bukti transfer asli"
                         >
-                          <Eye className="w-3 h-3" />
-                          Lihat Bukti
+                          <Eye className={`w-3 h-3 ${loadingProof === row.id ? 'animate-spin' : ''}`} />
+                          {loadingProof === row.id ? 'Memuat...' : 'Lihat Bukti'}
                         </button>
                       )}
 
