@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Edit2, Trash2, Shield, Key, Mail, User, X, Check, Save } from 'lucide-react';
+import { UserPlus, Edit2, Trash2, Shield, Key, Mail, User, X, Check, Save, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const SettingsTab = ({ API_URL }) => {
@@ -14,6 +14,7 @@ const SettingsTab = ({ API_URL }) => {
     email: '',
     role: 'admin'
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -101,6 +102,7 @@ const SettingsTab = ({ API_URL }) => {
           onClick={() => {
             setEditingUser(null);
             setFormData({ username: '', password: '', name: '', email: '', role: 'admin' });
+            setShowPassword(false);
             setIsModalOpen(true);
           }}
           className="flex items-center gap-2 bg-[#1A4B9F] text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-blue-200 hover:scale-[1.02] active:scale-95 transition-all w-fit"
@@ -147,7 +149,7 @@ const SettingsTab = ({ API_URL }) => {
                     </span>
                   </td>
                   <td className="p-6 text-right">
-                    <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
+                    <div className="flex justify-end gap-2 transition-all">
                       <button 
                         onClick={() => handleEdit(user)}
                         className="p-2 text-zinc-400 hover:text-[#1A4B9F] hover:bg-blue-50 rounded-lg transition-all"
@@ -217,12 +219,19 @@ const SettingsTab = ({ API_URL }) => {
                       <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-300" />
                       <input 
                         required={!editingUser}
-                        type="password" 
+                        type={showPassword ? "text" : "password"} 
                         value={formData.password}
                         onChange={e => setFormData({...formData, password: e.target.value})}
-                        className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-3 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium"
+                        className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-3 pl-11 pr-11 outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium"
                         placeholder="••••••••"
                       />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)} 
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </div>
 

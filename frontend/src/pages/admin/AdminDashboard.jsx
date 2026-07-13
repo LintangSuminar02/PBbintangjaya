@@ -67,7 +67,9 @@ const TAB_TITLES = {
 // ─────────────────────────────────────────────────
 const AdminDashboard = ({ onLogout, API_URL }) => {
   const { addToast } = useToast();
-  const [activeTab,    setActiveTab]    = useState('overview');
+  const [activeTab,    setActiveTab]    = useState(() => {
+    return sessionStorage.getItem('adminActiveTab') || 'overview';
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [bookings,     setBookings]     = useState([]);
   const [courts,       setCourts]       = useState([]);
@@ -126,6 +128,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
 
   // Refresh immediately on tab switch to data-heavy tabs
   useEffect(() => {
+    sessionStorage.setItem('adminActiveTab', activeTab);
     if (['schedule', 'bookings', 'overview', 'members'].includes(activeTab)) fetchData();
   }, [activeTab]);
 
@@ -351,6 +354,7 @@ const AdminDashboard = ({ onLogout, API_URL }) => {
               memberSchedules={memberSchedules} 
               weekDates={weekDates} 
               weekOffset={weekOffset} 
+              searchTerm={searchTerm}
             />
           )}
 

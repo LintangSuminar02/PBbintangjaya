@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 const DAY_NAMES = ['SENIN','SELASA','RABU','KAMIS',"JUM'AT",'SABTU','MINGGU'];
 const HOURS = ['07.00-08.00', '08.00-09.00', '09.00-10.00', '10.00-11.00', '11.00-12.00', '12.00-13.00', '13.00-14.00', '14.00-15.00', '15.00-16.00', '16.00-17.00', '17.00-18.00', '18.00-19.00', '19.00-20.00', '20.00-21.00', '21.00-22.00'];
 
-const ScheduleTab = ({ courts = [], bookings = [], memberSchedules = [], weekDates = [], weekOffset = 0 }) => {
+const ScheduleTab = ({ courts = [], bookings = [], memberSchedules = [], weekDates = [], weekOffset = 0, searchTerm = '' }) => {
   return (
     <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden flex flex-col h-[60vh] md:h-[70vh]">
       {/* Container untuk scroll horizontal dan vertikal */}
@@ -41,17 +41,27 @@ const ScheduleTab = ({ courts = [], bookings = [], memberSchedules = [], weekDat
                     {/* Slot Hari */}
                     {Array.from({ length: 7 }).map((_, dIdx) => {
                       const date = weekDates[dIdx];
-                      const member = memberSchedules.find(m => 
+                      let member = memberSchedules.find(m => 
                         m.is_active && Number(m.court_id) === Number(court.id) && 
                         Number(m.day_of_week) === (dIdx === 6 ? 7 : dIdx + 1) &&
                         parseInt(m.start_time) <= parseInt(time) && parseInt(m.end_time) > parseInt(time)
                       );
-                      const booking = !member && bookings.find(b => 
+                      let booking = !member && bookings.find(b => 
                         (b.status === 'Pending' || b.status === 'Confirmed') &&
                         Number(b.court_id) === Number(court.id) && 
                         b.booking_date === date && 
                         parseInt(b.start_time) <= parseInt(time) && parseInt(b.end_time) > parseInt(time)
                       );
+
+                      if (searchTerm) {
+                        const term = searchTerm.toLowerCase();
+                        if (member && !member.member_name?.toLowerCase().includes(term)) {
+                          member = null;
+                        }
+                        if (booking && !(booking.customer_full_name?.toLowerCase().includes(term) || booking.customer_name?.toLowerCase().includes(term))) {
+                          booking = null;
+                        }
+                      }
 
                       return (
                         <div key={dIdx} className="p-0.5 border-r border-zinc-100 last:border-r-0 min-h-[50px]">

@@ -465,10 +465,10 @@ app.post('/api/bookings', async (req, res) => {
   } = req.body;
   
   try {
-    // FCFS Check: See if there is a confirmed booking for this slot
+    // FCFS Check: See if there is a confirmed or pending booking for this slot
     const [conflicts] = await db.query(`
       SELECT * FROM bookings 
-      WHERE court_id = ? AND booking_date = ? AND status = 'Confirmed'
+      WHERE court_id = ? AND booking_date = ? AND status IN ('Confirmed', 'Pending')
       AND (
         (start_time <= ? AND end_time > ?) OR
         (start_time < ? AND end_time >= ?)

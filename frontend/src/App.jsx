@@ -20,7 +20,9 @@ import { ToastProvider } from './context/ToastContext';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('explore');
+  const [currentPage, setCurrentPage] = useState(() => {
+    return sessionStorage.getItem('currentPage') || 'explore';
+  });
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
   const [courts, setCourts] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -32,6 +34,10 @@ export default function App() {
       .then(res => res.json())
       .then(data => setCourts(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
+  }, [currentPage]);
+
+  useEffect(() => {
+    sessionStorage.setItem('currentPage', currentPage);
   }, [currentPage]);
 
   // ── Admin auth ───────────────────────────────────

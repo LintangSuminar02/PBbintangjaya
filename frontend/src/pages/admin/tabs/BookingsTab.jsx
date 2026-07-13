@@ -140,7 +140,7 @@ const BookingsTab = ({ bookings, onConfirm, onReject, onTogglePayment, API_URL }
                     </td>
 
                     <td className="px-4 py-5 text-right">
-                      <div className="flex gap-2 justify-end opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
+                      <div className="flex gap-2 justify-end transition-all">
                         {row.status === 'Pending' && (
                           <>
                             <button

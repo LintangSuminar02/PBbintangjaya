@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Lock, Users, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Lock, Users, ShieldCheck, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 const LoginPage = ({ onLogin, API_URL }) => {
   const { addToast } = useToast();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -70,12 +71,19 @@ const LoginPage = ({ onLogin, API_URL }) => {
             <div className="relative">
                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-300" />
                <input 
-                 type="password" 
+                 type={showPassword ? "text" : "password"} 
                  value={password}
                  onChange={(e) => setPassword(e.target.value)}
-                 className="w-full bg-zinc-50 rounded-2xl py-4 pl-12 pr-4 border border-zinc-100 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium"
+                 className="w-full bg-zinc-50 rounded-2xl py-4 pl-12 pr-12 border border-zinc-100 focus:ring-2 focus:ring-blue-100 outline-none transition-all font-medium"
                  placeholder="••••••••"
                />
+               <button 
+                 type="button" 
+                 onClick={() => setShowPassword(!showPassword)} 
+                 className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+               >
+                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+               </button>
             </div>
           </div>
 
